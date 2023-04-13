@@ -1,0 +1,109 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Restaurant-Project</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+</head>
+<body id="page-top">
+    <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
+    <!-- Header-->
+    <header class="bg-primary bg-gradient text-white">
+        <div class="container px-4 text-center">
+            <h1 class="fw-bolder">회원 정보 수정</h1>
+        </div>
+    </header>
+    <!-- About section-->
+    <section>
+        <div class="container px-4" style="width: 50%;">
+            <div class="row gx-4 justify-content-center">
+                <form id="form" action="/user/edit" th:object="${userDto}" method="post">
+                    <div class="container-fluid px-4">
+                    <h2 class="mb-3">회원 정보 수정</h2>
+
+                    <div class="card mb-4">
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">이메일</th>
+                                            <td class="pb-3">
+                                                <input class="my-input" th:field="*{email}" readonly>
+                                                <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">비밀번호</th>
+                                            <td>
+                                                <dl>
+                                                    <dt class="my-2">새 비밀번호</dt>
+                                                    <dd><input type="password" th:field="*{password1}"></dd>
+
+                                                    <dt class="my-2">새 비밀번호 확인</dt>
+                                                    <dd>
+                                                        <input type="password" th:field="*{password2}">
+                                                        <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}"></span></div>
+                                                    </dd>
+
+                                                </dl>
+                                            </td>
+                                        </tr>
+                                        <tr class="py-3">
+                                            <th class="py-3" scope="row">닉네임</th>
+                                            <td class="py-3">
+                                                <input type="text" th:field="*{nickname}">
+                                                <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></span></div>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <th class="pt-3" style="border-bottom: none;" scope="row">휴대전화</th>
+                                            <td class="pt-3" style="border-bottom: none;">
+                                                <input type="text" th:field="*{phoneNumber}">
+                                                <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span></div>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="float-end">
+                            <button type="button" class="btn btn-primary" id="cancel" onclick="location.href='/home'">취소</button>
+                            <button type="submit" class="btn btn-primary" id="edit">정보수정</button>
+                            <button type="button" class="btn btn-primary" id="delete">탈퇴하기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <nav th:replace="~{/fragment/footer :: footerFragment}"></nav>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $("#delete").click(function(){
+            if(confirm("탈퇴하시겠습니까?")){
+
+                $("#form").append("<input type='hidden' name='_method' value='delete' />");
+                $("#form").attr("action", "/user/unregister").submit();
+
+            } else {
+                return false;
+            }
+        });
+
+    </script>
+</body>
+</html>

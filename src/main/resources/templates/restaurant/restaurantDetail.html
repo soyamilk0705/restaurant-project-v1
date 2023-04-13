@@ -1,0 +1,95 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Restaurant-Project</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<body id="page-top">
+    <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
+    <!-- Header-->
+    <header class="bg-primary bg-gradient text-white">
+        <div class="container px-4 text-center">
+            <h1 class="fw-bolder">매장 찾기</h1>
+            <p class="lead">A functional Bootstrap 5 boilerplate for one page scrolling websites</p>
+        </div>
+    </header>
+
+    <!-- About section-->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center">
+                <form method="post" th:action="@{/admin/restaurant/delete/{id}(id = ${restaurant.id})}" onsubmit="return deleteConfirm();">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <h3 class="my-restaurant-h3" th:text="${restaurant.restaurantName}">매장 이름</h3>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>전화번호</th>
+                                <td th:text="${restaurant.phoneNumber}">...</td>
+                                <th>주소</th>
+                                <td th:text="${restaurant.address}">...</td>
+                            </tr>
+                            <tr>
+                                <th>영업시간</th>
+                                <td colspan="3" th:text="${restaurant.startTime} + '~' + ${restaurant.endTime}"></td>
+                            </tr>
+                            <tr>
+                                <th>좌석규모</th>
+                                <td th:text="${restaurant.limitedPersonNumber} + '석'">...</td>
+                                <th>매장서비스</th>
+                                <td>
+                                    <span class="fPointC01" th:if="${restaurant.packaging}">포장</span>
+                                    <span class="fPointC01" th:if="${restaurant.delivery}">배달</span>
+                                    <span class="fPointC01" th:if="${restaurant.parking}">주차가능</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>매장소개</th>
+                                <td colspan="3" th:utext="${restaurant.information}">...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-end" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="btn btn-primary" id="update" type="button" th:href="@{/admin/restaurant/modify/{id}(id = ${restaurant.id})}">수정하기</a>
+                        <button class="btn btn-primary" id="delete" type="submit">삭제하기</button>
+                    </div>
+                </form>
+
+
+            </div><br><br><br><br>
+
+
+            <div class="p-4 pt-0 border-top-0 bg-transparent">
+                <div class="text-center my-review-div">
+                    <button class="my-btn text-center" type="submit" onclick="location.href='/restaurant/list';">목록으로</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer th:replace="~{/fragment/footer :: footerFragment}"></footer>
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+    <script th:inline="javascript">
+        function deleteConfirm() {
+            if(confirm("삭제하시겠습니까?")){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>

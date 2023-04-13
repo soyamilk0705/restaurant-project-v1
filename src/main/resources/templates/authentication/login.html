@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Restaurant-Project</title>
+        <link href="/css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body class="d-flex flex-column min-vh-100">
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <main>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-5">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                                    <div class="card-body">
+
+                                        <form th:action="@{/login.do}" method="post">
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" id="email" name="email" type="email" placeholder="이메일" />
+                                                <label for="email">이메일</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" id="password" name="password" type="password" placeholder="비밀번호" />
+                                                <label for="password">비밀번호</label>
+                                            </div>
+                                            <div th:if="${param.error}">
+                                                <div class="my-error">
+                                                    사용자 이메일 또는 비밀번호를 확인해 주세요.
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                <button class="btn btn-primary form-control fw-bold" type="submit">로그인</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small"><a href="/join">회원가입</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <footer th:replace="~{/fragment/footer :: footerFragment}"></footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>
