@@ -2,8 +2,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Restaurant-Project</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     <link href="/css/styles.css" rel="stylesheet" />
@@ -12,7 +10,7 @@
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <!-- Header-->
+
     <header class="bg-primary bg-gradient text-white">
         <div class="container px-4 text-center">
             <h1 class="fw-bolder">마이페이지</h1>
@@ -50,7 +48,7 @@
                         <a class="nav-link" href="/user/mypage/reservation">예약 내역</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active fw-bold" data-toggle="page" href="/user/mypage/past_reservation">과거 예약 내역</a>
+                        <a class="nav-link active fw-bold" data-toggle="page" href="/user/mypage/past-reservation">과거 예약 내역</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/user/mypage/review">작성한 리뷰</a>
@@ -69,6 +67,7 @@
                                 <th scope="col">예약날짜</th>
                                 <th scope="col">예약시간</th>
                                 <th scope="col">요구사항</th>
+                                <th scope="col"></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -78,6 +77,12 @@
                                 <td th:text="${reservation.reservationDate}"></td>
                                 <td th:text="${reservation.reservationTime}"></td>
                                 <td th:text="${reservation.demand}"></td>
+                                <td>
+                                    <div class="text-muted" th:if="${reservation.cancel == true}">
+                                        예약 취소됨
+                                    </div>
+                                    <div></div>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -90,7 +95,7 @@
                                     </li>
                                     <li class="datatable-pagination-list-item datatable-active" th:each="page : ${#numbers.sequence(startPage, endPage)}">
                                         <a data-page="1" class="datatable-pagination-list-item-link"
-                                           th:if="${page != nowPage}" th:href="@{/user/mypage/reservation(page=${page-1})}" th:text="${page}"></a>
+                                           th:if="${page != nowPage}" th:href="@{/user/mypage/past-reservation(page=${page-1})}" th:text="${page}"></a>
                                         <a data-page="1" class="datatable-pagination-list-item-link"
                                            th:if="${page == nowPage}" th:text="${page}">1</a>
                                     </li>

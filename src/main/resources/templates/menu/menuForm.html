@@ -2,29 +2,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Restaurant-Project</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <!-- Header-->
     <header class="bg-primary bg-gradient text-white">
         <div class="container px-4 text-center">
-            <h1 class="fw-bolder" th:text="${menuItemRequestDto?.id} ? '메뉴 수정(Admin)' : '메뉴 등록(Admin)'"></h1>
+            <h1 class="fw-bolder" th:text="${menuItemDto?.id} ? '메뉴 수정(Admin)' : '메뉴 등록(Admin)'"></h1>
         </div>
     </header>
-    <!-- About section-->
     <section>
         <div class="container px-4">
             <div class="row gx-4 justify-content-center px-4">
-                <h2 class="mb-3" th:text="${menuItemRequestDto?.id} ? '메뉴 수정' : '메뉴 등록'"></h2>
-                <form id="form" method="post" action="/admin/menu/register" th:object="${menuItemRequestDto}" enctype="multipart/form-data">
+                <h2 class="mb-3" th:text="${menuItemDto?.id} ? '메뉴 수정' : '메뉴 등록'"></h2>
+                <form id="form" method="post" action="/admin/menu/register" th:object="${menuItemDto}" enctype="multipart/form-data">
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="mb-4">
@@ -40,7 +35,7 @@
 
                             <div class="mb-5">
                                 <label class="mb-2" for="file">메뉴 사진</label>
-                                <input type="file" name="file" class="form-control" id="file" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                <input class="form-control" id="file" type="file" name="file"  aria-describedby="inputGroupFileAddon04" aria-label="Upload">
                             </div>
                             <div class="mb-0">
                                 <label class="mb-2" th:for="description">메뉴 설명</label>
@@ -48,8 +43,8 @@
                             </div>
 
                             <div class="my-sm-3 text-end">
-                                <button class="btn btn-primary" th:if="!${menuItemRequestDto?.id}" type="submit" id="insert">작성 완료</button>
-                                <button class="btn btn-primary" th:if="${menuItemRequestDto?.id}" type="button" id="modify">수정 완료</button>
+                                <button class="btn btn-primary" th:if="!${menuItemDto?.id}" type="submit" id="insert">작성 완료</button>
+                                <button class="btn btn-primary" th:if="${menuItemDto?.id}" type="button" id="modify">수정 완료</button>
                             </div>
 
                         </div>
@@ -70,7 +65,7 @@
     <script th:inline="javascript">
         $("#modify").click(function(){
             $("#form").append("<input type='hidden' name='_method' value='put' />");
-            $("#form").attr("action", "/admin/menu/modify/" + [[ ${menuItemRequestDto?.id} ]]).submit();
+            $("#form").attr("action", "/admin/menu/modify/" + [[ ${menuItemDto?.id} ]]).submit();
         });
 
     </script>

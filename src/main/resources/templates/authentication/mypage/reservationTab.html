@@ -2,8 +2,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Restaurant-Project</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     <link href="/css/styles.css" rel="stylesheet" />
@@ -12,7 +10,7 @@
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <!-- Header-->
+
     <header class="bg-primary bg-gradient text-white">
         <div class="container px-4 text-center">
             <h1 class="fw-bolder">마이페이지</h1>
@@ -50,7 +48,7 @@
                         <a class="nav-link active fw-bold" data-toggle="page" href="/user/mypage/reservation">예약 내역</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/user/mypage/past_reservation">과거 예약 내역</a>
+                        <a class="nav-link" href="/user/mypage/past-reservation">과거 예약 내역</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/user/mypage/review">작성한 리뷰</a>
@@ -80,8 +78,13 @@
                                     <td th:text="${reservation.reservationTime}"></td>
                                     <td th:text="${reservation.demand}"></td>
                                     <td>
-                                        <button class="my-reservation-btn" id="modify" th:onclick="|location.href='@{/reservation/modify/{reservationId}(reservationId = ${reservation.id})}'|">수정하기</button>
-                                        <button class="my-reservation-btn" type="submit" th:onclick="deleteConfirm([[${reservation.id}]])" id="delete">예약취소</button>
+                                        <div th:if="${reservation.cancel == false}">
+                                            <button class="my-reservation-btn" id="modify" type="button" th:onclick="|location.href='@{/reservation/modify/{reservationId}(reservationId = ${reservation.id})}'|">수정하기</button>
+                                            <button class="my-reservation-btn" type="submit" th:onclick="deleteConfirm([[${reservation.id}]])" id="delete">예약취소</button>
+                                        </div>
+                                        <div class="text-muted" th:if="${reservation.cancel == true}">
+                                            예약 취소됨
+                                        </div>
                                     </td>
                                 </tr>
                             </form>
@@ -108,16 +111,12 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
-    <!-- Footer-->
-    <footer th:replace="~{/fragment/footer :: footerFragment}"></footer>
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <footer th:replace="~{/fragment/footer :: footerFragment}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 

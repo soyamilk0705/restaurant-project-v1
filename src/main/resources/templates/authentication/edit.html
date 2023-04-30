@@ -2,28 +2,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Restaurant-Project</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <!-- Header-->
     <header class="bg-primary bg-gradient text-white">
         <div class="container px-4 text-center">
             <h1 class="fw-bolder">회원 정보 수정</h1>
         </div>
     </header>
-    <!-- About section-->
     <section>
         <div class="container px-4" style="width: 50%;">
             <div class="row gx-4 justify-content-center">
                 <form id="form" action="/user/edit" th:object="${userDto}" method="post">
+                    <input id="hidden" type='hidden' name='_method' value='put' />
                     <div class="container-fluid px-4">
                     <h2 class="mb-3">회원 정보 수정</h2>
 
@@ -35,7 +31,6 @@
                                             <th scope="row">이메일</th>
                                             <td class="pb-3">
                                                 <input class="my-input" th:field="*{email}" readonly>
-                                                <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -96,7 +91,7 @@
         $("#delete").click(function(){
             if(confirm("탈퇴하시겠습니까?")){
 
-                $("#form").append("<input type='hidden' name='_method' value='delete' />");
+                $("#hidden").attr("value", "delete");
                 $("#form").attr("action", "/user/unregister").submit();
 
             } else {

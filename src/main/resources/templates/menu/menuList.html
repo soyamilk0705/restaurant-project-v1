@@ -2,34 +2,28 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Restaurant-Project</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <!-- Header-->
     <header class="bg-primary bg-gradient text-white">
         <div class="container px-4 text-center">
             <h1 class="fw-bolder">메뉴 소개<span sec:authorize="hasRole('ROLE_ADMIN')">(Admin)</span></h1>
-            <p class="lead">A functional Bootstrap 5 boilerplate for one page scrolling websites</p>
             <a class="btn btn-lg btn-light" sec:authorize="hasRole('ROLE_ADMIN')" href="/admin/menu/register">메뉴 등록</a>
         </div>
     </header>
-    <!-- About section-->
     <section class="py-5">
         <div class="container px-4 px-lg-5 mt-5">
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                 <div class="col mb-5" th:each="menu : ${menuItemList}">
-
                     <div class="card h-100">
-                        <a th:if="${menu.filepath}" th:href="@{/menu/detail(id=${menu.id})}">
-                            <img class="card-img-top" th:src="${menu.filepath}" alt="..." />
-                        </a>
-
+                        <div th:each="file : ${menu.fileList}">
+                            <a th:if="${file.filePath}" th:href="@{/menu/detail(id=${menu.id})}">
+                                <img class="card-img-top" th:src="${file.filePath}" alt="..." />
+                            </a>
+                        </div>
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <h5 class="fw-bolder" th:text="${menu.food}">음식</h5>

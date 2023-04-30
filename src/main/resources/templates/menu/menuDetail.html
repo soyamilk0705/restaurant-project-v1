@@ -2,8 +2,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Restaurant-Project</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     <link href="/css/styles.css" rel="stylesheet" />
@@ -11,24 +9,20 @@
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <!-- Header-->
     <header class="bg-primary bg-gradient text-white">
         <div class="container px-4 text-center">
             <h1 class="fw-bolder">메뉴 소개<span sec:authorize="hasRole('ROLE_ADMIN')">(Admin)</span></h1>
             <p class="lead">A functional Bootstrap 5 boilerplate for one page scrolling websites</p>
         </div>
     </header>
-
-    <!-- About section-->
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5">
             <form method="post" th:action="@{/admin/menu/delete/{id}(id = ${menuItem.id})}" onsubmit="return deleteConfirm();">
                 <input type="hidden" name="_method" value="delete"/>
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6" th:if="${menuItem.filepath}">
-                        <img class="card-img-top mb-5 mb-md-0" th:src="${menuItem.filepath}" alt="..." />
+                    <div class="col-md-6" th:each="file : ${menuItem.fileList}" th:if="${file} != null">
+                        <img class="card-img-top mb-5 mb-md-0" th:src="${file.filePath}" alt="..." />
                     </div>
-                    <div class="col-md-3" th:if="!${menuItem.filepath}"></div>
                     <div class="col-md-6">
                         <h1 class="display-5 fw-bolder" th:text="${menuItem.food}">메뉴이름</h1><br>
                         <div class="fs-5 mb-5">

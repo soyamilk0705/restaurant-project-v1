@@ -2,16 +2,12 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
         <title>Restaurant-Project</title>
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Core theme CSS (includes Bootstrap)-->
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
         <link href="/css/styles.css" rel="stylesheet" />
     </head>
     <body id="page-top">
         <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-        <!-- Header-->
         <header class="bg-primary bg-gradient text-white">
             <div class="container px-4 text-center">
                 <h1 class="fw-bolder">예약하기<span sec:authorize="hasRole('ROLE_ADMIN')">(Admin)</span></h1>
@@ -19,7 +15,6 @@
                 <a class="btn btn-lg btn-light" sec:authorize="hasRole('ROLE_ADMIN')" href="/admin/reservation/list">예약 내역 보기</a>
             </div>
         </header>
-        <!-- About section-->
         <section>
             <div class="container px-4">
                 <div class="row gx-4 justify-content-center">
@@ -32,23 +27,23 @@
                                         <div class="input-group">
                                             <select class="form-select" id="city" name="city" onchange="categoryChange(this);">
                                                 <option disabled selected>시/도</option>
-                                                <option value='서울'>서울특별시</option>
-                                                <option value='부산'>부산광역시</option>
-                                                <option value='대구'>대구광역시</option>
-                                                <option value='인천'>인천광역시</option>
-                                                <option value='광주'>광주광역시</option>
-                                                <option value='대전'>대전광역시</option>
-                                                <option value='울산'>울산광역시</option>
-                                                <option value='경기'>경기도</option>
-                                                <option value='강원'>강원도</option>
-                                                <option value='충북'>충청북도</option>
-                                                <option value='충남'>충청남도</option>
-                                                <option value='전북'>전라북도</option>
-                                                <option value='전남'>전라남도</option>
-                                                <option value='경북'>경상북도</option>
-                                                <option value='경남'>경상남도</option>
-                                                <option value='제주'>제주특별자치도</option>
-                                                <option value='세종'>세종특별자치시</option>
+                                                <option value='서울특별시'>서울특별시</option>
+                                                <option value='부산광역시'>부산광역시</option>
+                                                <option value='대구광역시'>대구광역시</option>
+                                                <option value='인천광역시'>인천광역시</option>
+                                                <option value='광주광역시'>광주광역시</option>
+                                                <option value='대전광역시'>대전광역시</option>
+                                                <option value='울산광역시'>울산광역시</option>
+                                                <option value='경기도'>경기도</option>
+                                                <option value='강원도'>강원도</option>
+                                                <option value='충청북도'>충청북도</option>
+                                                <option value='충청남도'>충청남도</option>
+                                                <option value='전라북도'>전라북도</option>
+                                                <option value='전라남도'>전라남도</option>
+                                                <option value='경상북도'>경상북도</option>
+                                                <option value='경상남도'>경상남도</option>
+                                                <option value='제주특별자치도'>제주특별자치도</option>
+                                                <option value='세종특별자치시'>세종특별자치시</option>
                                             </select>
 
                                             <select class="form-select" name="country" id="country">
@@ -73,7 +68,7 @@
                                     <tbody>
                                     <tr th:each="restaurant : ${restaurantList}">
                                         <td th:text="${restaurant.restaurantName}"></td>
-                                        <td th:text="${restaurant.address}"></td>
+                                        <td th:text="${restaurant.city} + ' ' + ${restaurant.country} + ' ' + ${restaurant.detailAddress}"></td>
                                         <td th:text="${restaurant.phoneNumber}"></td>
                                         <td><a class="my-reservation-btn btn-primary" id="selectStore" th:href="@{/reservation/{restaurantId}(restaurantId = ${restaurant.id})}">매장선택</a></td>
                                     </tr>
@@ -88,13 +83,12 @@
 
 
         <footer th:replace="~{/fragment/footer :: footerFragment}"></footer>
-        <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <script type="text/javascript">
 
             var cnt = new Array();
-            var city = ['서울','부산','대구','인천','광주','대전','울산','경기','강원','충북','충남','전북','전남','경북','경남','제주','세종'];
+            var city = ['서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','경기도','강원도','충청북도','충청남도','전라북도','전라남도','경상북도','경상남도','제주특별자치도','세종특별자치시'];
 
             cnt[0] = new Array('전체','강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구');
             cnt[1] = new Array('전체','강서구','금정구','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구','기장군');

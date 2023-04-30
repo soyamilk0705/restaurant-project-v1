@@ -2,11 +2,8 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
         <title>Restaurant-Project</title>
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Core theme CSS (includes Bootstrap)-->
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
         <link href="/css/styles.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     </head>
@@ -14,7 +11,6 @@
     <body id="page-top" class="d-flex flex-column min-vh-100">
         <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
 
-        <!-- About section-->
         <section class="py-5">
             <div id="layoutAuthentication">
                 <div id="layoutAuthentication_content">
@@ -25,38 +21,38 @@
                                     <div class="card shadow-lg border-0 rounded-lg mt-5">
                                         <div class="card-header"><h3 class="text-center font-weight-light my-4">회원가입</h3></div>
 
-                                        <form th:action="@{/join}" th:object="${userDto}" method="post">
+                                        <form th:action="@{/join}" th:object="${sessionDto}" method="post">
                                             <div class="card-body">
                                                 <div class="mb-3">
                                                     <label class="form-label">이메일</label>
                                                     <div class="mb-3">
                                                         <div class="input-group">
-                                                            <input id="email" type="email" class="form-control" th:field="*{email}">
-                                                            <button type="button" class="btn btn-primary" id="checkEmailDuplicate">중복확인</button>
+                                                            <input class="form-control" type="email" th:field="*{email}">
+                                                            <button class="btn btn-primary" id="checkEmailDuplicate" type="button">중복확인</button>
                                                         </div>
                                                         <div class="mt-1" id="check_email"><span class="my-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label">비밀번호</label>
-                                                        <input id="password1" type="password" class="form-control" th:field="*{password1}">
+                                                        <input class="form-control" type="password"  th:field="*{password1}">
                                                         <div class="mt-1"> <span class="my-error" th:if="${#fields.hasErrors('password1')}" th:errors="*{password1}"></span></div>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label">비밀번호 확인</label>
-                                                        <input id="password2" type="password" class="form-control" th:field="*{password2}">
+                                                        <input class="form-control" type="password" th:field="*{password2}">
                                                         <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}"></span></div>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label">닉네임</label>
-                                                        <input id="nickname" type="text" class="form-control" th:field="*{nickname}">
+                                                        <input class="form-control" type="text" th:field="*{nickname}">
                                                         <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></span></div>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label">휴대전화</label>
-                                                        <input id="phone_number" type="text" class="form-control" th:field="*{phoneNumber}">
+                                                        <input class="form-control" type="text" th:field="*{phoneNumber}">
                                                         <div class="mt-1"><span class="my-error" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span></div>
                                                     </div>
-                                                    <button type="submit" class="btn btn-primary" id="insert">회원가입</button>
+                                                    <button class="btn btn-primary" id="insert" type="submit">회원가입</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -97,8 +93,6 @@
                     }
                 })
             });
-
-
 
         </script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
