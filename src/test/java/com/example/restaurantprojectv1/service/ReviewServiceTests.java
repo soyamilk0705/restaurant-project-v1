@@ -1,11 +1,10 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.MenuItem;
-import com.example.restaurantprojectv1.domain.dao.Restaurant;
-import com.example.restaurantprojectv1.domain.dao.Review;
-import com.example.restaurantprojectv1.domain.dao.User;
-import com.example.restaurantprojectv1.domain.dto.RestaurantDto;
-import com.example.restaurantprojectv1.domain.dto.ReviewRequestDto;
+import com.example.restaurantprojectv1.domain.entity.MenuItem;
+import com.example.restaurantprojectv1.domain.entity.Restaurant;
+import com.example.restaurantprojectv1.domain.entity.Review;
+import com.example.restaurantprojectv1.domain.entity.User;
+import com.example.restaurantprojectv1.domain.dto.ReviewDto;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
 import com.example.restaurantprojectv1.repository.MenuItemRepository;
 import com.example.restaurantprojectv1.repository.RestaurantRepository;
@@ -38,20 +37,20 @@ public class ReviewServiceTests {
     @Autowired private MenuItemRepository menuItemRepository;
 
 
-    private ReviewRequestDto reviewDto = new ReviewRequestDto();
+    private ReviewDto.Request reviewDto = new ReviewDto.Request();
     private Restaurant restaurant;
     private User user;
     private MenuItem menuItem;
 
     @BeforeEach
     void before(){
-        restaurant = restaurantRepository.save(new Restaurant());
-        user = userRepository.save(new User());
+        restaurant = restaurantRepository.save(new Restaurant("test", 10));
+        user = userRepository.save(new User("test@gmail.com", "test"));
         menuItem = menuItemRepository.save(MenuItem.builder().food("reviewTest").build());;
 
-        reviewDto.setFood("reviewTest")
-                .setScore(5)
-                .setDescription("test");
+        reviewDto.setFood("reviewTest");
+        reviewDto.setScore(5);
+        reviewDto.setDescription("test");
 
     }
 
@@ -69,8 +68,7 @@ public class ReviewServiceTests {
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
-        assertNotNull(savedReview.getFilename());
-        assertNotNull(savedReview.getFilepath());
+        assertNotNull(savedReview.getReviewFileList());
 
     }
 
@@ -87,8 +85,7 @@ public class ReviewServiceTests {
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
-        assertNull(savedReview.getFilename());
-        assertNull(savedReview.getFilepath());
+        assertNotNull(savedReview.getReviewFileList());
 
     }
 
@@ -121,8 +118,7 @@ public class ReviewServiceTests {
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
-        assertNull(savedReview.getFilename());
-        assertNull(savedReview.getFilepath());
+        assertNotNull(savedReview.getReviewFileList());
 
     }
 
@@ -144,8 +140,7 @@ public class ReviewServiceTests {
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
-        assertNotNull(savedReview.getFilename());
-        assertNotNull(savedReview.getFilepath());
+        assertNotNull(savedReview.getReviewFileList());
 
     }
 
@@ -168,8 +163,7 @@ public class ReviewServiceTests {
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
-        assertNotNull(savedReview.getFilename());
-        assertNotNull(savedReview.getFilepath());
+        assertNotNull(savedReview.getReviewFileList());
 
     }
 

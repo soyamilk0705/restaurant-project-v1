@@ -1,6 +1,6 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.Restaurant;
+import com.example.restaurantprojectv1.domain.entity.Restaurant;
 import com.example.restaurantprojectv1.domain.dto.RestaurantDto;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
 import com.example.restaurantprojectv1.repository.RestaurantRepository;
@@ -35,7 +35,7 @@ public class RestaurantServiceTests {
         Restaurant savedRestaurant = restaurantRepository.findById(restaurantId).orElseGet(null);
 
         assertEquals(restaurantDto.getRestaurantName(), savedRestaurant.getRestaurantName());
-        assertEquals(restaurantDto.getAddress(), savedRestaurant.getAddress());
+        assertEquals(restaurantDto.getDetailAddress(), savedRestaurant.getDetailAddress());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class RestaurantServiceTests {
         Long createId = restaurantService.create(restaurantDto);
 
         restaurantDto.setRestaurantName("수정");
-        restaurantDto.setAddress("수정");
+        restaurantDto.setDetailAddress("수정");
 
         // when
         Long updateId = restaurantService.update(createId, restaurantDto);
@@ -66,7 +66,7 @@ public class RestaurantServiceTests {
         Restaurant savedRestaurant = restaurantRepository.findById(updateId).orElse(null);
 
         assertEquals(restaurantDto.getRestaurantName(), savedRestaurant.getRestaurantName());
-        assertEquals(restaurantDto.getAddress(), savedRestaurant.getAddress());
+        assertEquals(restaurantDto.getDetailAddress(), savedRestaurant.getDetailAddress());
     }
 
     @Test
@@ -82,7 +82,9 @@ public class RestaurantServiceTests {
     private RestaurantDto createRestaurantDto(){
         return RestaurantDto.builder()
                 .restaurantName("restaurantTest")
-                .address("restaurantTest")
+                .city("서울특별시")
+                .country("강남구")
+                .detailAddress("신사동")
                 .information("restaurantTest")
                 .limitedPersonNumber(10)
                 .phoneNumber("010-0000-0000")

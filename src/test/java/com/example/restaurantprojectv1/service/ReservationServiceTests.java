@@ -1,10 +1,8 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.*;
-import com.example.restaurantprojectv1.domain.dto.ReservationRequestDto;
-import com.example.restaurantprojectv1.domain.dto.ReviewRequestDto;
+import com.example.restaurantprojectv1.domain.entity.*;
+import com.example.restaurantprojectv1.domain.dto.ReservationDto;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
-import com.example.restaurantprojectv1.exception.OverReservationPersons;
 import com.example.restaurantprojectv1.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,20 +30,21 @@ public class ReservationServiceTests {
     @Autowired private UserRepository userRepository;
 
 
-    private ReservationRequestDto reservationDto = new ReservationRequestDto();
+    private ReservationDto.Request reservationDto;
     private Restaurant restaurant;
     private User user;
 
     @BeforeEach
     void before(){
         restaurant = restaurantRepository.save(Restaurant.builder().limitedPersonNumber(10).build());
-        user = userRepository.save(new User());
+        user = userRepository.save(new User("test@gmail.com", "test"));
 
-        reservationDto.setPersonCount(1)
-                .setReservationTime(LocalTime.now().toString())
-                .setReservationDate(LocalDate.now().toString())
-                .setDemand("test");
-
+        reservationDto = ReservationDto.Request.builder()
+                .personCount(1)
+                .reservationTime(LocalTime.now().toString())
+                .reservationDate(LocalDate.now())
+                .demand("test")
+                .build();
     }
 
     @Test

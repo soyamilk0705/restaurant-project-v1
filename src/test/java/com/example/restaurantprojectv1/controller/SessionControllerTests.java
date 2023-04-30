@@ -34,7 +34,6 @@ class SessionControllerTests {
 
     private MockMvc mockMvc;
 
-
     @BeforeEach
     void setUp(){
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
@@ -70,8 +69,8 @@ class SessionControllerTests {
     }
 
 
-    private UserDto createUserDto(){
-        return UserDto.builder()
+    private UserDto.Request createUserDto(){
+        return UserDto.Request.builder()
                 .email("user@gmail.com")
                 .password1("user")
                 .password2("user")

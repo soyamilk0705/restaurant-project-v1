@@ -1,6 +1,7 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.User;
+import com.example.restaurantprojectv1.domain.dto.SessionDto;
+import com.example.restaurantprojectv1.domain.entity.User;
 import com.example.restaurantprojectv1.domain.dto.UserDto;
 import com.example.restaurantprojectv1.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
@@ -20,11 +21,28 @@ public class SessionServiceTests {
     @Autowired SessionService sessionService;
     @Autowired UserRepository userRepository;
 
+    // TODO
+
+    @Test
+    @DisplayName("이메일 중복 검사 실패")
+    void check_email_duplicate_fail(){
+        // given
+        SessionDto user = createSessionDto();
+        sessionService.join(user);
+
+        // when
+        boolean result = sessionService.checkEmailDuplicate("test@gmail.com");
+
+        // then
+        assertEquals(true, result);
+    }
+
+
     @Test
     @DisplayName("회원가입 성공")
-    void join(){
+    void join_success(){
         // given
-        UserDto user = createUserRequestDto();
+        SessionDto user = createSessionDto();
 
         // when
         sessionService.join(user);
@@ -37,8 +55,8 @@ public class SessionServiceTests {
     }
 
 
-    private UserDto createUserRequestDto() {
-        return UserDto.builder()
+    private SessionDto createSessionDto() {
+        return SessionDto.builder()
                 .email("test@gmail.com")
                 .nickname("test")
                 .password1("password")
