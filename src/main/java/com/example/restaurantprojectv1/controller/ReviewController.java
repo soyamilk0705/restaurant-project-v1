@@ -1,11 +1,8 @@
 package com.example.restaurantprojectv1.controller;
 
 import com.example.restaurantprojectv1.domain.Pagination;
-import com.example.restaurantprojectv1.domain.dao.PrincipalDetails;
-import com.example.restaurantprojectv1.domain.dto.MenuItemResponseDto;
-import com.example.restaurantprojectv1.domain.dto.RestaurantDto;
-import com.example.restaurantprojectv1.domain.dto.ReviewRequestDto;
-import com.example.restaurantprojectv1.domain.dto.ReviewResponseDto;
+import com.example.restaurantprojectv1.domain.entity.PrincipalDetails;
+import com.example.restaurantprojectv1.domain.dto.ReviewDto;
 import com.example.restaurantprojectv1.service.MenuItemService;
 import com.example.restaurantprojectv1.service.RestaurantService;
 import com.example.restaurantprojectv1.service.ReviewService;
@@ -14,12 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @Controller
 @RequestMapping("/review")
@@ -41,7 +34,7 @@ public class ReviewController {
 
     @GetMapping("/list")
     public String reviewList(Model model, @PageableDefault(size = 5, sort = "registeredAt", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<ReviewResponseDto> reviewDtoPage = reviewService.readAll(pageable);
+        Page<ReviewDto.Response> reviewDtoPage = reviewService.readAll(pageable);
 
         Pagination pagination = new Pagination();
         pagination.setPagination(reviewDtoPage.getPageable().getPageNumber(), reviewDtoPage.getTotalPages());
@@ -56,7 +49,7 @@ public class ReviewController {
 
     @GetMapping("/list/search")
     public String reviewListSearch(Model model, @RequestParam String keyword, @PageableDefault Pageable pageable){
-        Page<ReviewResponseDto> reviewDtoPage = reviewService.readAllSearch(keyword, pageable);
+        Page<ReviewDto.Response> reviewDtoPage = reviewService.readAllSearch(keyword, pageable);
 
         Pagination pagination = new Pagination();
         pagination.setPagination(reviewDtoPage.getPageable().getPageNumber(),  reviewDtoPage.getTotalPages());
@@ -86,8 +79,8 @@ public class ReviewController {
     }
 
     @GetMapping("/{restaurantId}")
-    public String read(@PathVariable Long restaurantId, Model model){
-        model.addAttribute("reviewRequestDto", new ReviewRequestDto());
+    public String createPage(@PathVariable Long restaurantId, Model model){
+        model.addAttribute("reviewDto", new ReviewDto.Request());
         model.addAttribute("restaurant", restaurantService.read(restaurantId));
         model.addAttribute("menuItemList", menuItemService.readAll());
 
@@ -97,7 +90,7 @@ public class ReviewController {
     @PostMapping("/{restaurantId}")
     public String create(@PathVariable Long restaurantId,
                          @AuthenticationPrincipal PrincipalDetails userDetails,
-                         @Valid ReviewRequestDto reviewRequestDto,
+                         @Valid @ModelAttribute("reviewDto") ReviewDto.Request reviewDto,
                          BindingResult bindingResult,
                          MultipartFile file,
                          Model model) throws IOException {
@@ -107,7 +100,7 @@ public class ReviewController {
         }
 
         Long userId = userDetails.getUser().getId();
-        reviewService.create(restaurantId, userId, reviewRequestDto, file);
+        reviewService.create(restaurantId, userId, reviewDto, file);
 
         model.addAttribute("message", "작성이 완료되었습니다.");
         model.addAttribute("searchUrl", "/review/list");
@@ -117,7 +110,7 @@ public class ReviewController {
 
     @GetMapping("/modify/{reviewId}")
     public String updatePage(@PathVariable Long reviewId, Model model){
-        model.addAttribute("reviewRequestDto", reviewService.read(reviewId));
+        model.addAttribute("reviewDto", reviewService.read(reviewId));
         model.addAttribute("menuItemList", menuItemService.readAll());
 
         return "review/reviewForm";
@@ -125,7 +118,7 @@ public class ReviewController {
 
     @PutMapping("/modify/{reviewId}")
     public String update(@PathVariable Long reviewId,
-                         @Valid ReviewRequestDto reviewRequestDto,
+                         @Valid @ModelAttribute("reviewDto") ReviewDto.Request reviewDto,
                          BindingResult bindingResult,
                          MultipartFile file,
                          Model model) throws URISyntaxException, IOException {
@@ -134,7 +127,7 @@ public class ReviewController {
             return "review/reviewForm";
         }
 
-        reviewService.update(reviewId, file, reviewRequestDto);
+        reviewService.update(reviewId, file, reviewDto);
 
         model.addAttribute("message", "수정이 완료되었습니다.");
         model.addAttribute("searchUrl", "/user/mypage/review");

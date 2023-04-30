@@ -1,23 +1,16 @@
 package com.example.restaurantprojectv1.controller;
 
-import com.example.restaurantprojectv1.domain.dto.MenuItemRequestDto;
+import com.example.restaurantprojectv1.domain.dto.MenuItemDto;
 import com.example.restaurantprojectv1.service.MenuItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,12 +33,12 @@ public class MenuItemController {
 
     @GetMapping("/admin/menu/register")
     public String createPage(Model model){
-        model.addAttribute("menuItemRequestDto", new MenuItemRequestDto());
+        model.addAttribute("menuItemDto", new MenuItemDto.Request());
         return "menu/menuForm";
     }
 
     @PostMapping("/admin/menu/register")
-    public String create(@Valid MenuItemRequestDto menuItemRequestDto,
+    public String create(@Valid @ModelAttribute(name = "menuItemDto") MenuItemDto.Request menuItemDto,
                          BindingResult bindingResult,
                          MultipartFile file,
                          Model model) throws IOException {
@@ -54,7 +47,7 @@ public class MenuItemController {
             return "menu/menuForm";
         }
 
-        menuItemService.create(file, menuItemRequestDto);
+        menuItemService.create(file, menuItemDto);
 
         model.addAttribute("message", "작성이 완료되었습니다.");
         model.addAttribute("searchUrl", "/menu/list");
@@ -64,13 +57,13 @@ public class MenuItemController {
 
     @GetMapping("/admin/menu/modify/{id}")
     public String updatePage(@PathVariable Long id, Model model){
-        model.addAttribute("menuItemRequestDto", menuItemService.read(id));
+        model.addAttribute("menuItemDto", menuItemService.read(id));
         return "menu/menuForm";
     }
 
     @PutMapping("/admin/menu/modify/{id}")
     public String update(@PathVariable Long id,
-                         @Valid MenuItemRequestDto menuItemRequestDto,
+                         @Valid @ModelAttribute(name = "menuItemDto") MenuItemDto.Request menuItemDto,
                          BindingResult bindingResult,
                          MultipartFile file,
                          Model model) throws IOException {
@@ -79,7 +72,7 @@ public class MenuItemController {
             return "menu/menuForm";
         }
 
-        menuItemService.update(id, file, menuItemRequestDto);
+        menuItemService.update(id, file, menuItemDto);
 
         model.addAttribute("message", "수정이 완료되었습니다.");
         model.addAttribute("searchUrl", "/menu/list");

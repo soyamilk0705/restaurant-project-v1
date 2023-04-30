@@ -1,6 +1,6 @@
 package com.example.restaurantprojectv1.repository;
 
-import com.example.restaurantprojectv1.domain.dao.Review;
+import com.example.restaurantprojectv1.domain.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

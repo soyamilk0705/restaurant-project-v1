@@ -1,10 +1,9 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.Reservation;
-import com.example.restaurantprojectv1.domain.dao.Restaurant;
-import com.example.restaurantprojectv1.domain.dao.User;
-import com.example.restaurantprojectv1.domain.dto.ReservationRequestDto;
-import com.example.restaurantprojectv1.domain.dto.ReservationResponseDto;
+import com.example.restaurantprojectv1.domain.entity.Reservation;
+import com.example.restaurantprojectv1.domain.entity.Restaurant;
+import com.example.restaurantprojectv1.domain.entity.User;
+import com.example.restaurantprojectv1.domain.dto.ReservationDto;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
 import com.example.restaurantprojectv1.repository.ReservationRepository;
 import com.example.restaurantprojectv1.repository.RestaurantRepository;
@@ -15,12 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class ReservationService{
 
     private final ReservationRepository reservationRepository;
@@ -28,18 +28,18 @@ public class ReservationService{
     private final UserRepository userRepository;
 
 
-    public Long create(Long restaurantId, Long userId, ReservationRequestDto request) {
+    public Long create(Long restaurantId, Long userId, ReservationDto.Request reservationDto) {
         var restaurant = getRestaurantData(restaurantId);
         var user = getUserData(userId);
 
-        checkPersonNumber(request.getPersonCount(), restaurant.getLimitedPersonNumber());
+        checkPersonNumber(reservationDto.getPersonCount(), restaurant.getLimitedPersonNumber());
 
 
         Reservation reservation = Reservation.builder()
-                .personCount(request.getPersonCount())
-                .reservationDate(LocalDate.parse(request.getReservationDate(), DateTimeFormatter.ISO_DATE))
-                .reservationTime(request.getReservationTime())
-                .demand(request.getDemand())
+                .personCount(reservationDto.getPersonCount())
+                .reservationDate(LocalDate.parse(reservationDto.getReservationDate(), DateTimeFormatter.ISO_DATE))
+                .reservationTime(reservationDto.getReservationTime())
+                .demand(reservationDto.getDemand())
                 .cancel(false)
                 .restaurant(restaurant)
                 .user(user)
@@ -51,52 +51,43 @@ public class ReservationService{
     }
 
 
-    public ReservationResponseDto read(Long reservationId) {
+    public ReservationDto.Response read(Long reservationId) {
         return reservationRepository.findById(reservationId)
                 .map(this::checkCancel)
-                .map(this::entityToDto)
+                .map(r -> new ReservationDto.Response(r))
                 .orElseThrow(() -> new DataNotFoundException("예약내역을 찾을 수 없습니다."));
     }
 
-    public Page<ReservationResponseDto> readAll(Pageable pageable){
+    public Page<ReservationDto.Response> readAll(Pageable pageable){
         return reservationRepository.findAll(pageable)
-                .map(this::entityToDto);
+                .map(r -> new ReservationDto.Response(r));
     }
 
-    public Page<ReservationResponseDto> readAllSearch(String searchType, String keyword, Pageable pageable){
+    public Page<ReservationDto.Response> readAllSearch(String searchType, String keyword, Pageable pageable){
         switch (searchType) {
             case "매장명":
                 return reservationRepository.findAllByRestaurantName(keyword, pageable)
-                        .map(this::entityToDto);
+                        .map(r -> new ReservationDto.Response(r));
             case "예약자명":
                 return reservationRepository.findAllByNickname(keyword, pageable)
-                        .map(this::entityToDto);
-            case "전화번호":
-                return reservationRepository.findAllByPhoneNumber(keyword, pageable)
-                        .map(this::entityToDto);
+                        .map(r -> new ReservationDto.Response(r));
             case "예약날짜":
                 return reservationRepository.findAllByReservationDateContaining(keyword, pageable)
-                        .map(this::entityToDto);
-            case "예약시간":
-                return reservationRepository.findAllByReservationTimeContaining(keyword, pageable)
-                        .map(this::entityToDto);
-            case "요구사항":
-                return reservationRepository.findAllByDemandContaining(keyword, pageable)
-                        .map(this::entityToDto);
+                        .map(r -> new ReservationDto.Response(r));
         }
 
         return null;
     }
 
 
-    public Page<ReservationResponseDto> myPageCurrentDate(Long userId, Pageable pageable) {
+    public Page<ReservationDto.Response> myPageCurrentDate(Long userId, Pageable pageable) {
         return reservationRepository.findAllByUserIdCurrentDate(userId, pageable)
-                .map(this::entityToDto);
+                .map(r -> new ReservationDto.Response(r));
     }
 
-    public Page<ReservationResponseDto> myPagePastDate(Long userId, Pageable pageable) {
+    public Page<ReservationDto.Response> myPagePastDate(Long userId, Pageable pageable) {
         return reservationRepository.findAllByUserIdPastDate(userId, pageable)
-                .map(this::entityToDto);
+                .map(r -> new ReservationDto.Response(r));
     }
 
     public Long countByUserIdCurrentDate(Long userId){
@@ -105,14 +96,11 @@ public class ReservationService{
 
 
 
-    public Long update(Long reservationId, ReservationRequestDto request) {
+    public Long update(Long reservationId, ReservationDto.Request reservationDto) {
         return reservationRepository.findById(reservationId)
                 .map(this::checkCancel)
                 .map(reservation -> {
-                    reservation.setPersonCount(request.getPersonCount())
-                            .setReservationDate(LocalDate.parse(request.getReservationDate(), DateTimeFormatter.ISO_DATE))
-                            .setReservationTime(request.getReservationTime())
-                            .setDemand(request.getDemand());
+                    reservation.set(reservationDto);
 
                     reservationRepository.save(reservation);
 
@@ -133,24 +121,14 @@ public class ReservationService{
                 .orElseThrow(() -> new DataNotFoundException("예약내역을 찾을 수 없습니다."));
     }
 
+
+
+
+
+
+
     public boolean checkPersonNumber(Integer requestPerson, Integer restaurantPerson){
         return requestPerson > restaurantPerson || requestPerson < 1;
-    }
-
-
-
-
-    private ReservationResponseDto entityToDto(Reservation reservation) {
-        return ReservationResponseDto.builder()
-                .id(reservation.getId())
-                .restaurantName(reservation.getRestaurant().getRestaurantName())
-                .nickname(reservation.getUser().getNickname())
-                .phoneNumber(reservation.getUser().getPhoneNumber())
-                .personCount(reservation.getPersonCount())
-                .reservationDate(reservation.getReservationDate().toString())
-                .reservationTime(reservation.getReservationTime())
-                .demand(reservation.getDemand())
-                .cancel(reservation.isCancel()).build();
     }
 
     private Reservation checkCancel(Reservation reservation){
@@ -159,8 +137,6 @@ public class ReservationService{
         }
         return reservation;
     }
-
-
 
     public Restaurant getReservedRestaurant(Long reservationId){
         Reservation reservation = reservationRepository.findById(reservationId)

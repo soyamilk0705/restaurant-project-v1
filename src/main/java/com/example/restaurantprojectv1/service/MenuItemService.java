@@ -1,78 +1,77 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.MenuItem;
-import com.example.restaurantprojectv1.domain.dto.MenuItemRequestDto;
-import com.example.restaurantprojectv1.domain.dto.MenuItemResponseDto;
+import com.example.restaurantprojectv1.domain.entity.MenuItem;
+import com.example.restaurantprojectv1.domain.dto.MenuItemDto;
+import com.example.restaurantprojectv1.domain.entity.MenuItemFile;
+import com.example.restaurantprojectv1.domain.entity.Review;
+import com.example.restaurantprojectv1.domain.entity.ReviewFile;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
+import com.example.restaurantprojectv1.repository.MenuItemFileRepository;
 import com.example.restaurantprojectv1.repository.MenuItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MenuItemService {
 
     private final MenuItemRepository menuItemRepository;
+    private final MenuItemFileRepository menuItemFileRepository;
 
-    public Long create(MultipartFile file, MenuItemRequestDto requestDto) throws IOException {
+    String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\menuItem";
+
+    public Long create(MultipartFile file, MenuItemDto.Request requestDto) throws IOException {
         MenuItem menuItem = MenuItem.builder()
                 .food(requestDto.getFood())
                 .price(requestDto.getPrice())
                 .description(requestDto.getDescription())
                 .build();
 
-        if (!file.isEmpty()){
-            String filename = fileSetting(file);
-
-            menuItem.setFilename(filename)
-                    .setFilepath("/images/menuItem/" + filename);
-        }
-
         menuItemRepository.save(menuItem);
+
+        if (file != null){
+            saveFile(menuItem, file);
+        }
 
         return menuItem.getId();
 
     }
 
-    public MenuItemResponseDto read(Long id) {
+    public MenuItemDto.Response read(Long id) {
         return menuItemRepository.findById(id)
-                .map(this::entityToDto)
+                .map(m -> new MenuItemDto.Response(m))
                 .orElseThrow(() -> new DataNotFoundException("메뉴를 찾을 수 없습니다."));
     }
 
-    public List<MenuItemResponseDto> readAll(){
+    public List<MenuItemDto.Response> readAll(){
         return menuItemRepository.findAll()
                 .stream()
-                .map(this::entityToDto)
+                .map(m -> new MenuItemDto.Response(m))
                 .collect(Collectors.toList());
     }
 
-
-    public Long update(Long id, MultipartFile file, MenuItemRequestDto requestDto) throws IOException {
+    public Long update(Long id, MultipartFile file, MenuItemDto.Request menuItemDto) throws IOException {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("메뉴를 찾을 수 없습니다."));
 
-        menuItem.setFood(requestDto.getFood())
-                .setPrice(requestDto.getPrice())
-                .setDescription(requestDto.getDescription());
-
-        if (!file.isEmpty()){
-            String filename = fileSetting(file);
-
-            menuItem.setFilename(filename)
-                    .setFilepath("/images/menuItem/" + filename);
-        }
+        menuItem.set(menuItemDto);
 
         menuItemRepository.save(menuItem);
+
+        if (!file.isEmpty()){
+            saveFile(menuItem, file);
+        }
 
         return menuItem.getId();
     }
@@ -82,32 +81,42 @@ public class MenuItemService {
                 .orElseThrow(() -> new DataNotFoundException("메뉴를 찾을 수 없습니다."));
 
         menuItemRepository.delete(menuItem);
+
+        removeFile(menuItem.getMenuItemFileList().get(0).getFileName());
     }
 
 
 
 
-    private MenuItemResponseDto entityToDto(MenuItem menuItem) {
-        return MenuItemResponseDto.builder()
-                .id(menuItem.getId())
-                .food(menuItem.getFood())
-                .price(menuItem.getPrice())
-                .description(menuItem.getDescription())
-                .filename(menuItem.getFilename())
-                .filepath(menuItem.getFilepath()).build();
-    }
 
-    public String fileSetting(MultipartFile file) throws IOException {
-        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\menuItem";
-
+    private void saveFile(MenuItem menuItem, MultipartFile file) throws IOException {
         UUID uuid = UUID.randomUUID();
-        String filename = uuid + "_" + file.getOriginalFilename();
+        String fileName = uuid + "_" + file.getOriginalFilename();
 
-        File savedFile = new File(projectPath, filename);
+        File savedFile = new File(projectPath, fileName);
         file.transferTo(savedFile);
 
-        return filename;
+        MenuItemFile menuItemFile = MenuItemFile.builder()
+                .fileName(fileName)
+                .filePath("/images/menuItem/" + fileName)
+                .menuItem(menuItem).build();
+
+        menuItemFileRepository.save(menuItemFile);
+
+        menuItem.getMenuItemFileList().add(menuItemFile);
     }
 
+    public void removeFile(String fileName){
+        File deleteFile;
 
+        try {
+            deleteFile = new File(projectPath + "\\" + URLDecoder.decode(fileName, "UTF-8"));
+            deleteFile.delete();
+
+            menuItemFileRepository.deleteByFileName(fileName);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.restaurantprojectv1.controller;
 
+import com.example.restaurantprojectv1.domain.dto.SessionDto;
 import com.example.restaurantprojectv1.domain.dto.UserDto;
 import com.example.restaurantprojectv1.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -19,23 +20,14 @@ public class SessionController {
 
     @GetMapping("/join")
     public String joinPage(Model model){
-        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("sessionDto", new SessionDto());
         return "authentication/join";
     }
 
 
     @PostMapping("/join")
-    public String join(@Valid UserDto userDto, BindingResult bindingResult, Model model) {
-
-        if (!StringUtils.hasLength(userDto.getPassword1())) {
-            bindingResult.rejectValue("password1", "passwordNull", "필수 정보입니다.");
-        }
-
-        if (!StringUtils.hasLength(userDto.getPassword2())) {
-            bindingResult.rejectValue("password2", "passwordNull", "필수 정보입니다.");
-        }
-
-        if (!userDto.getPassword1().equals(userDto.getPassword2())){
+    public String join(@Valid SessionDto sessionDto, BindingResult bindingResult, Model model) {
+        if (!sessionDto.getPassword1().equals(sessionDto.getPassword2())){
             bindingResult.rejectValue("password2", "passwordInCorrect", "비밀번호가 일치하지 않습니다.");
         }
 
@@ -43,7 +35,7 @@ public class SessionController {
             return "authentication/join";
         }
 
-        sessionService.join(userDto);
+        sessionService.join(sessionDto);
 
         model.addAttribute("message", "회원가입이 완료되었습니다.");
         model.addAttribute("searchUrl", "/home");

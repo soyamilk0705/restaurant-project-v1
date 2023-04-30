@@ -1,82 +1,77 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.MenuItem;
-import com.example.restaurantprojectv1.domain.dao.Restaurant;
-import com.example.restaurantprojectv1.domain.dao.Review;
-import com.example.restaurantprojectv1.domain.dao.User;
-import com.example.restaurantprojectv1.domain.dto.ReviewRequestDto;
-import com.example.restaurantprojectv1.domain.dto.ReviewResponseDto;
+import com.example.restaurantprojectv1.domain.dto.ReviewDto;
+import com.example.restaurantprojectv1.domain.entity.*;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
-import com.example.restaurantprojectv1.repository.MenuItemRepository;
-import com.example.restaurantprojectv1.repository.RestaurantRepository;
-import com.example.restaurantprojectv1.repository.ReviewRepository;
-import com.example.restaurantprojectv1.repository.UserRepository;
+import com.example.restaurantprojectv1.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
     private final MenuItemRepository menuItemRepository;
+    private final ReviewFileRepository reviewFileRepository;
+
+    String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\review";
 
 
-    public Long create(Long restaurantId, Long userId, ReviewRequestDto reviewRequestDto, MultipartFile file) throws IOException {
+    public Long create(Long restaurantId, Long userId, ReviewDto.Request reviewDto, MultipartFile file) throws IOException {
         Restaurant restaurant = getRestaurantData(restaurantId);
         User user = getUserData(userId);
-        MenuItem menuItem = getMenuItemData(reviewRequestDto.getFood());
+        MenuItem menuItem = getMenuItemData(reviewDto.getFood());
 
         Review review = Review.builder()
-                .score(reviewRequestDto.getScore())
-                .description(reviewRequestDto.getDescription())
+                .score(reviewDto.getScore())
+                .description(reviewDto.getDescription())
                 .restaurant(restaurant)
                 .menuItem(menuItem)
                 .user(user).build();
 
+        reviewRepository.save(review);
 
-        if (!file.isEmpty()){
-            String filename = fileSetting(file);
-
-            review.setFilename(filename)
-                    .setFilepath("/images/review/" + filename);
+        if (file != null){
+            saveFile(review, file);
         }
 
-        reviewRepository.save(review);
 
         return review.getId();
     }
 
-    public ReviewResponseDto read(Long reviewId) {
+    public ReviewDto.Response read(Long reviewId) {
         return reviewRepository.findById(reviewId)
-                .map(this::entityToDto)
+                .map(r -> new ReviewDto.Response(r))
                 .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
     }
 
-    public Page<ReviewResponseDto> readAll(Pageable pageable) {
+    public Page<ReviewDto.Response> readAll(Pageable pageable) {
         return reviewRepository.findAll(pageable)
-                .map(this::entityToDto);
+                .map(r -> new ReviewDto.Response(r));
     }
 
-    public Page<ReviewResponseDto> readAllSearch(String keyword, Pageable pageable){
+    public Page<ReviewDto.Response> readAllSearch(String keyword, Pageable pageable){
         return reviewRepository.findAllByDescriptionContaining(keyword, pageable)
-                .map(this::entityToDto);
+                .map(r -> new ReviewDto.Response(r));
     }
 
-    public Page<ReviewResponseDto> readAllByUserId(Long userId, Pageable pageable){
+    public Page<ReviewDto.Response> readAllByUserId(Long userId, Pageable pageable){
         return reviewRepository.findAllByUserId(userId, pageable)
-                .map(this::entityToDto);
+                .map(r -> new ReviewDto.Response(r));
     }
 
     public Long countByUserId(Long userId) {
@@ -84,51 +79,35 @@ public class ReviewService {
     }
 
 
-    public Long update(Long reviewId, MultipartFile file, ReviewRequestDto request) throws IOException  {
+    public Long update(Long reviewId, MultipartFile file, ReviewDto.Request reviewDto) throws IOException  {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
 
-        MenuItem menuItem = getMenuItemData(request.getFood());
+        MenuItem menuItem = getMenuItemData(reviewDto.getFood());
 
-        review.setScore(request.getScore())
-                .setMenuItem(menuItem)
-                .setDescription(request.getDescription());
-
-
-        if (!file.isEmpty()) {
-            String filename = fileSetting(file);
-
-            review.setFilename(filename)
-                    .setFilepath("/images/review/" + filename);
-        }
+        review.set(reviewDto, menuItem);
 
         reviewRepository.save(review);
 
+        if (file != null) {
+            saveFile(review, file);
+        }
+
         return review.getId();
     }
+
 
     public void delete(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
 
         reviewRepository.delete(review);
+
+        removeFile(review.getReviewFileList().get(0).getFileName());
     }
 
 
 
-
-    private ReviewResponseDto entityToDto(Review review) {
-        return ReviewResponseDto.builder()
-                .id(review.getId())
-                .restaurantName(review.getRestaurant().getRestaurantName())
-                .nickname(review.getUser().getNickname())
-                .food(review.getMenuItem().getFood())
-                .score(review.getScore())
-                .filename(review.getFilename())
-                .filepath(review.getFilepath())
-                .description(review.getDescription())
-                .updatedAt(review.getUpdatedAt().toLocalDate()).build();
-    }
 
     private Restaurant getRestaurantData(Long restaurantId){
         return restaurantRepository.findById(restaurantId)
@@ -145,16 +124,36 @@ public class ReviewService {
                 .orElseThrow(() ->  new DataNotFoundException("메뉴를 찾을 수 없습니다."));
     }
 
-    private String fileSetting(MultipartFile file) throws IOException {
-        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\review";
 
+    private void saveFile(Review review, MultipartFile file) throws IOException {
         UUID uuid = UUID.randomUUID();
-        String filename = uuid + "_" + file.getOriginalFilename();
+        String fileName = uuid + "_" + file.getOriginalFilename();
 
-        File savedFile = new File(projectPath, filename);
+        File savedFile = new File(projectPath, fileName);
         file.transferTo(savedFile);
 
-        return filename;
+        ReviewFile reviewFile = ReviewFile.builder()
+                .fileName(fileName)
+                .filePath("/images/review/" + fileName)
+                .review(review).build();
+
+        reviewFileRepository.save(reviewFile);
+
+        review.getReviewFileList().add(reviewFile);
+    }
+
+    public void removeFile(String fileName){
+        File deleteFile;
+
+        try {
+            deleteFile = new File(projectPath + "\\" + URLDecoder.decode(fileName, "UTF-8"));
+            deleteFile.delete();
+
+            reviewFileRepository.deleteByFileName(fileName);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 

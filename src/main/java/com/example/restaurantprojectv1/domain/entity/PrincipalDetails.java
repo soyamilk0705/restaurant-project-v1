@@ -1,4 +1,4 @@
-package com.example.restaurantprojectv1.domain.dao;
+package com.example.restaurantprojectv1.domain.entity;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

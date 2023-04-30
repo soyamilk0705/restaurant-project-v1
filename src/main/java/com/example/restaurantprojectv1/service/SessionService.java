@@ -1,6 +1,7 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.User;
+import com.example.restaurantprojectv1.domain.dto.SessionDto;
+import com.example.restaurantprojectv1.domain.entity.User;
 import com.example.restaurantprojectv1.domain.dto.UserDto;
 import com.example.restaurantprojectv1.domain.enumclass.UserRole;
 import com.example.restaurantprojectv1.repository.UserRepository;
@@ -9,10 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SessionService {
 
     private final UserRepository userRepository;
@@ -23,14 +26,13 @@ public class SessionService {
 
     }
 
-    public Long join(UserDto userDto) {
+    public Long join(SessionDto sessionDto) {
         User user = User.builder()
-                .email(userDto.getEmail())
-                .password(passwordEncoder.encode(userDto.getPassword1()))
-                .nickname(userDto.getNickname())
-                .phoneNumber(userDto.getPhoneNumber())
+                .email(sessionDto.getEmail())
+                .password(passwordEncoder.encode(sessionDto.getPassword1()))
+                .nickname(sessionDto.getNickname())
+                .phoneNumber(sessionDto.getPhoneNumber())
                 .role(UserRole.ROLE_USER)
-                .registeredAt(LocalDateTime.now())
                 .unregisteredAt(null).build();
 
         userRepository.save(user);

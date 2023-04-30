@@ -1,10 +1,9 @@
 package com.example.restaurantprojectv1.controller;
 
 import com.example.restaurantprojectv1.domain.Pagination;
-import com.example.restaurantprojectv1.domain.dao.PrincipalDetails;
-import com.example.restaurantprojectv1.domain.dao.Restaurant;
-import com.example.restaurantprojectv1.domain.dto.ReservationRequestDto;
-import com.example.restaurantprojectv1.domain.dto.ReservationResponseDto;
+import com.example.restaurantprojectv1.domain.entity.PrincipalDetails;
+import com.example.restaurantprojectv1.domain.entity.Restaurant;
+import com.example.restaurantprojectv1.domain.dto.ReservationDto;
 import com.example.restaurantprojectv1.domain.dto.RestaurantDto;
 import com.example.restaurantprojectv1.service.ReservationService;
 import com.example.restaurantprojectv1.service.RestaurantService;
@@ -13,19 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -54,15 +48,15 @@ public class ReservationController{
     public String createPage(Model model, @PathVariable Long restaurantId){
 
         model.addAttribute("restaurant", restaurantService.read(restaurantId));
-        model.addAttribute("reservationRequestDto", new ReservationRequestDto());
+        model.addAttribute("reservationDto", new ReservationDto.Request());
 
-        return "reservation/reservationForm";
+        return "reservation/reservationWrite";
     }
 
     @PostMapping("/reservation/{restaurantId}")
     public String create(@PathVariable Long restaurantId,
                          @AuthenticationPrincipal PrincipalDetails userDetails,
-                         @Valid ReservationRequestDto reservationDto,
+                         @Valid @ModelAttribute(name = "reservationDto") ReservationDto.Request reservationDto,
                          BindingResult bindingResult,
                          Model model) {
 
@@ -70,14 +64,14 @@ public class ReservationController{
 
         if (bindingResult.hasErrors()){
             model.addAttribute("restaurant", restaurant);
-            return "reservation/reservationForm";
+            return "reservation/reservationWrite";
         }
 
         if (reservationService.checkPersonNumber(reservationDto.getPersonCount(), restaurant.getLimitedPersonNumber())){
             bindingResult.rejectValue("personCount", "overPersonCount","수용인원을 초과했습니다.");
 
             model.addAttribute("restaurant", restaurant);
-            return "reservation/reservationForm";
+            return "reservation/reservationWrite";
         }
 
 
@@ -96,15 +90,15 @@ public class ReservationController{
 
         Restaurant restaurant = reservationService.getReservedRestaurant(reservationId);
 
-        model.addAttribute("reservationRequestDto", reservationService.read(reservationId));
+        model.addAttribute("reservationDto", reservationService.read(reservationId));
         model.addAttribute("limitedPersonNumber", restaurant.getLimitedPersonNumber());
 
-        return "reservation/reservationForm";
+        return "reservation/reservationEdit";
     }
 
     @PutMapping("/reservation/modify/{reservationId}")
     public String update(@PathVariable Long reservationId,
-                         @Valid ReservationRequestDto reservationDto,
+                         @Valid @ModelAttribute("reservationDto") ReservationDto.Request reservationDto,
                          BindingResult bindingResult,
                          Model model) throws URISyntaxException {
 
@@ -112,14 +106,14 @@ public class ReservationController{
 
         if (bindingResult.hasErrors()){
             model.addAttribute("restaurant", restaurant);
-            return "reservation/reservationForm";
+            return "reservation/reservationEdit";
         }
 
         if (reservationService.checkPersonNumber(reservationDto.getPersonCount(), restaurant.getLimitedPersonNumber())){
             bindingResult.rejectValue("personCount", "수용인원을 초과했습니다.");
 
             model.addAttribute("restaurant", restaurant);
-            return "reservation/reservationForm";
+            return "reservation/reservationEdit";
         }
 
         reservationService.update(reservationId, reservationDto);
@@ -149,7 +143,7 @@ public class ReservationController{
                                 @SortDefault(sort = "reservationTime")
                             }) Pageable pageable){
 
-        Page<ReservationResponseDto> responseDtoPage = reservationService.readAll(pageable);
+        Page<ReservationDto.Response> responseDtoPage = reservationService.readAll(pageable);
 
         Pagination pagination = new Pagination();
         pagination.setPagination(responseDtoPage.getPageable().getPageNumber(), responseDtoPage.getTotalPages());
@@ -172,7 +166,7 @@ public class ReservationController{
                                         @SortDefault(sort = "reservationTime")
                                     }) Pageable pageable){
 
-        Page<ReservationResponseDto> responseDtoPage = reservationService.readAllSearch(searchType, keyword, pageable);
+        Page<ReservationDto.Response> responseDtoPage = reservationService.readAllSearch(searchType, keyword, pageable);
 
         Pagination pagination = new Pagination();
         pagination.setPagination(responseDtoPage.getPageable().getPageNumber(), responseDtoPage.getTotalPages());

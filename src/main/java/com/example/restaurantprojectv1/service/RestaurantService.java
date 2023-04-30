@@ -1,17 +1,19 @@
 package com.example.restaurantprojectv1.service;
 
-import com.example.restaurantprojectv1.domain.dao.Restaurant;
+import com.example.restaurantprojectv1.domain.entity.Restaurant;
 import com.example.restaurantprojectv1.domain.dto.*;
 import com.example.restaurantprojectv1.exception.DataNotFoundException;
 import com.example.restaurantprojectv1.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
@@ -20,7 +22,9 @@ public class RestaurantService {
 
         Restaurant restaurant = Restaurant.builder()
                 .restaurantName(restaurantDto.getRestaurantName())
-                .address(restaurantDto.getAddress())
+                .city(restaurantDto.getCity())
+                .country(restaurantDto.getCountry())
+                .detailAddress(restaurantDto.getDetailAddress())
                 .phoneNumber(restaurantDto.getPhoneNumber())
                 .limitedPersonNumber(restaurantDto.getLimitedPersonNumber())
                 .information(restaurantDto.getInformation())
@@ -53,10 +57,10 @@ public class RestaurantService {
             restaurantList = restaurantRepository.findAllByRestaurantNameContaining(keyword);
         } else if(country.equals("전체")){
             // city, keyword 있을 경우
-            restaurantList = restaurantRepository.findByAddressContainingAndRestaurantNameContaining(city, keyword);
+            restaurantList = restaurantRepository.searchCityAndRestaurantName(city, keyword);
         } else{
             // city, country, keyword 있을 경우
-            restaurantList = restaurantRepository.findByAddressContainingAndAddressContainingAndRestaurantNameContaining(city, country, keyword);
+            restaurantList = restaurantRepository.searchAddressAndRestaurantName(city, country, keyword);
         }
 
         return restaurantList.stream()
@@ -69,16 +73,7 @@ public class RestaurantService {
     public Long update(Long id, RestaurantDto restaurantDto) {
         return restaurantRepository.findById(id)
                 .map(restaurant -> {
-                    restaurant.setRestaurantName(restaurantDto.getRestaurantName())
-                            .setAddress(restaurantDto.getAddress())
-                            .setPhoneNumber(restaurantDto.getPhoneNumber())
-                            .setStartTime(restaurantDto.getStartTime())
-                            .setEndTime(restaurantDto.getEndTime())
-                            .setLimitedPersonNumber(restaurantDto.getLimitedPersonNumber())
-                            .setPackaging(restaurantDto.isPackaging())
-                            .setDelivery(restaurantDto.isDelivery())
-                            .setParking(restaurantDto.isParking())
-                            .setInformation(restaurantDto.getInformation());
+                    restaurant.set(restaurantDto);
 
                     restaurantRepository.save(restaurant);
 
@@ -100,7 +95,9 @@ public class RestaurantService {
         return RestaurantDto.builder()
                 .id(restaurant.getId())
                 .restaurantName(restaurant.getRestaurantName())
-                .address(restaurant.getAddress())
+                .city(restaurant.getCity())
+                .country(restaurant.getCountry())
+                .detailAddress(restaurant.getDetailAddress())
                 .information(restaurant.getInformation())
                 .phoneNumber(restaurant.getPhoneNumber())
                 .limitedPersonNumber(restaurant.getLimitedPersonNumber())
