@@ -17,24 +17,30 @@ public class  RestaurantDto {
 
     private Long id;
 
-    @NotBlank(message = "매장 이름은 필수 정보입니다.")
+    @NotBlank(message = "필수 정보입니다.")
     private String restaurantName;
 
-    @NotBlank(message = "주소는 필수 정보입니다.")
-    private String address;
+    @NotBlank(message = "필수 정보입니다.")
+    private String city;
+
+    @NotBlank(message = "필수 정보입니다.")
+    private String country;
+
+    @NotBlank(message = "필수 정보입니다.")
+    private String detailAddress;
 
     private String information;
 
-    @NotBlank(message = "전화 번호는 필수 정보입니다.")
+    @NotBlank(message = "필수 정보입니다.")
     private String phoneNumber;
 
-    @NotNull(message = "좌석 규모는 필수 정보입니다.")
+    @NotNull(message = "필수 정보입니다.")
     private Integer limitedPersonNumber;
 
-    @NotBlank(message = "영업 시작시간은 필수 정보입니다.")
+    @NotBlank(message = "필수 정보입니다.")
     private String startTime;
 
-    @NotBlank(message = "영업 마감시간은 필수 정보입니다.")
+    @NotBlank(message = "필수 정보입니다.")
     private String endTime;
 
     @ColumnDefault("0")
