@@ -9,9 +9,9 @@
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <header class="bg-primary bg-gradient text-white">
+    <header class="header-background text-white">
         <div class="container px-4 text-center">
-            <h1 class="fw-bolder">매장 찾기</h1>
+            <h1 class="header-item fw-bolder">매장 찾기</h1>
         </div>
     </header>
 
@@ -51,8 +51,8 @@
                     </table>
 
                     <div class="text-end" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a class="btn btn-primary" id="update" type="button" th:href="@{/admin/restaurant/modify/{id}(id = ${restaurant.id})}">수정하기</a>
-                        <button class="btn btn-primary" id="delete" type="submit">삭제하기</button>
+                        <a class="btn btn-outline-primary" id="update" type="button" th:href="@{/admin/restaurant/modify/{id}(id = ${restaurant.id})}">수정하기</a>
+                        <button class="btn btn-outline-primary" id="delete" type="submit">삭제하기</button>
                     </div>
                 </form>
 
@@ -62,7 +62,7 @@
 
             <div class="p-4 pt-0 border-top-0 bg-transparent">
                 <div class="text-center my-review-div">
-                    <button class="my-btn text-center" type="submit" onclick="location.href='/restaurant/list';">목록으로</button>
+                    <button class="btn btn-outline-primary btn-lg" type="submit" onclick="location.href='/restaurant/list';">목록으로</button>
                 </div>
             </div>
 

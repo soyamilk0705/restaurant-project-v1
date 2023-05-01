@@ -10,9 +10,9 @@
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <header class="bg-primary bg-gradient text-white">
+    <header class="header-background text-white">
         <div class="container px-4 text-center">
-            <h1 class="fw-bolder">회원 정보 수정</h1>
+            <h1 class="header-item fw-bolder">회원 정보 수정</h1>
         </div>
     </header>
     <section>
@@ -71,9 +71,9 @@
                         </div>
 
                         <div class="float-end">
-                            <button type="button" class="btn btn-primary" id="cancel" onclick="location.href='/home'">취소</button>
-                            <button type="submit" class="btn btn-primary" id="edit">정보수정</button>
-                            <button type="button" class="btn btn-primary" id="delete">탈퇴하기</button>
+                            <button type="button" class="btn btn-outline-primary" id="cancel" onclick="location.href='/home'">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="edit">정보수정</button>
+                            <button type="button" class="btn btn-outline-primary" id="delete">탈퇴하기</button>
                         </div>
                     </div>
                 </form>

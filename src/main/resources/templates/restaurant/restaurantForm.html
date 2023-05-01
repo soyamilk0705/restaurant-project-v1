@@ -10,9 +10,9 @@
 </head>
 <body id="page-top">
 <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-<header class="bg-primary bg-gradient text-white">
+<header class="header-background text-white">
     <div class="container px-4 text-center">
-        <h1 class="fw-bolder" th:text="${restaurantDto?.id} ? '매장 수정(Admin)' : '매장 등록(Admin)'"></h1>
+        <h1 class="header-item fw-bolder" th:text="${restaurantDto?.id} ? '매장 수정(Admin)' : '매장 등록(Admin)'"></h1>
     </div>
 </header>
     <section>

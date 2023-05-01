@@ -8,9 +8,9 @@
     </head>
     <body id="page-top">
         <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-        <header class="bg-primary bg-gradient text-white">
+        <header class="header-background text-white">
             <div class="container px-4 text-center">
-                <h1 class="fw-bolder">리뷰 작성</h1>
+                <h1 class="header-item fw-bolder">리뷰 작성</h1>
             </div>
         </header>
         <section>
@@ -68,7 +68,7 @@
                                         <td th:text="${restaurant.restaurantName}"></td>
                                         <td th:text="${restaurant.city} + ' ' + ${restaurant.country} + ' ' + ${restaurant.detailAddress}"></td>
                                         <td th:text="${restaurant.phoneNumber}"></td>
-                                        <td><a class="my-reservation-btn btn-primary" id="selectStore" th:href="@{/review/{restaurantId}(restaurantId = ${restaurant.id})}">매장선택</a></td>
+                                        <td><a class="btn btn-outline-primary btn-sm my-1" id="selectStore" th:href="@{/review/{restaurantId}(restaurantId = ${restaurant.id})}">매장선택</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -79,15 +79,8 @@
             </div>
         </section>
 
-
-
-        <!-- Footer-->
-        <footer class="py-5 bg-dark">
-            <div class="container px-4"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p></div>
-        </footer>
-        <!-- Bootstrap core JS-->
+        <footer th:replace="~{/fragment/footer :: footerFragment}"></footer>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
 
         <script language='javascript'>
 

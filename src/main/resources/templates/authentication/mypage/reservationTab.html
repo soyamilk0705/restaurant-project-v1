@@ -11,9 +11,9 @@
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
 
-    <header class="bg-primary bg-gradient text-white">
+    <header class="header-background text-white">
         <div class="container px-4 text-center">
-            <h1 class="fw-bolder">마이페이지</h1>
+            <h1 class="header-item fw-bolder">마이페이지</h1>
         </div>
     </header>
 
@@ -79,8 +79,8 @@
                                     <td th:text="${reservation.demand}"></td>
                                     <td>
                                         <div th:if="${reservation.cancel == false}">
-                                            <button class="my-reservation-btn" id="modify" type="button" th:onclick="|location.href='@{/reservation/modify/{reservationId}(reservationId = ${reservation.id})}'|">수정하기</button>
-                                            <button class="my-reservation-btn" type="submit" th:onclick="deleteConfirm([[${reservation.id}]])" id="delete">예약취소</button>
+                                            <button class="btn btn-outline-primary btn-sm" id="modify" type="button" th:onclick="|location.href='@{/reservation/modify/{reservationId}(reservationId = ${reservation.id})}'|">수정하기</button>
+                                            <button class="btn btn-outline-primary btn-sm" type="submit" th:onclick="deleteConfirm([[${reservation.id}]])" id="delete">예약취소</button>
                                         </div>
                                         <div class="text-muted" th:if="${reservation.cancel == true}">
                                             예약 취소됨

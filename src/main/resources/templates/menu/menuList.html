@@ -8,10 +8,10 @@
 </head>
 <body id="page-top">
     <nav th:replace="~{/fragment/navbar :: navbarFragment}"></nav>
-    <header class="bg-primary bg-gradient text-white">
+    <header class="header-background text-white">
         <div class="container px-4 text-center">
-            <h1 class="fw-bolder">메뉴 소개<span sec:authorize="hasRole('ROLE_ADMIN')">(Admin)</span></h1>
-            <a class="btn btn-lg btn-light" sec:authorize="hasRole('ROLE_ADMIN')" href="/admin/menu/register">메뉴 등록</a>
+            <h1 class="header-item fw-bolder">메뉴 소개<span sec:authorize="hasRole('ROLE_ADMIN')">(Admin)</span></h1>
+            <a class="header-item btn btn-lg btn-light mt-4" sec:authorize="hasRole('ROLE_ADMIN')" href="/admin/menu/register">메뉴 등록</a>
         </div>
     </header>
     <section class="py-5">
