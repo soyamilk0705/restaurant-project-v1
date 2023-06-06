@@ -19,7 +19,7 @@ public class MenuItemDto {
         private String food;
 
         @NotNull(message = "필수 정보 입니다.")
-        private Integer price;
+        private int price;
 
         private String description;
 
@@ -36,7 +36,7 @@ public class MenuItemDto {
     public static class Response{
         private Long id;
         private String food;
-        private Integer price;
+        private int price;
         private String description;
         private List<MenuItemFileDto.Response> fileList;
 

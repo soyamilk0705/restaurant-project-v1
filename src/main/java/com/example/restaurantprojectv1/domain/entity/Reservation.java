@@ -27,7 +27,7 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer personCount;
+    private int personCount;
 
     private LocalDate reservationDate;
 
@@ -54,7 +54,7 @@ public class Reservation {
     private User user;
 
     @Builder
-    public Reservation(Integer personCount, LocalDate reservationDate, String reservationTime, String demand,
+    public Reservation(int personCount, LocalDate reservationDate, String reservationTime, String demand,
                        boolean cancel, Restaurant restaurant, User user){
         this.personCount = personCount;
         this.reservationDate = reservationDate;

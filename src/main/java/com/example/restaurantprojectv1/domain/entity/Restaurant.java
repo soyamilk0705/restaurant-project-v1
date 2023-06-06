@@ -39,7 +39,7 @@ public class Restaurant {
 
     private String phoneNumber;
 
-    private Integer limitedPersonNumber;
+    private int limitedPersonNumber;
 
     private String startTime;
 
@@ -75,7 +75,7 @@ public class Restaurant {
 
 
     @Builder
-    public Restaurant(String restaurantName, String city, String country, String detailAddress, String information, String phoneNumber, Integer limitedPersonNumber, String startTime, String endTime, boolean packaging, boolean delivery, boolean parking) {
+    public Restaurant(String restaurantName, String city, String country, String detailAddress, String information, String phoneNumber, int limitedPersonNumber, String startTime, String endTime, boolean packaging, boolean delivery, boolean parking) {
         this.restaurantName = restaurantName;
         this.city = city;
         this.country = country;

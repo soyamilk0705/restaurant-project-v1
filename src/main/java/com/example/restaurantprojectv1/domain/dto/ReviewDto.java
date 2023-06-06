@@ -24,7 +24,7 @@ public class ReviewDto {
         @Min(1)
         @Max(5)
         @NotNull(message = "필수 정보입니다.")
-        private Integer score;
+        private int score;
 
         private String description;
     }
@@ -35,7 +35,7 @@ public class ReviewDto {
         private String restaurantName;
         private String nickname;
         private String food;
-        private Integer score;
+        private int score;
         private String description;
         private LocalDate updatedAt;
         private List<ReviewFileDto.Response> fileList;

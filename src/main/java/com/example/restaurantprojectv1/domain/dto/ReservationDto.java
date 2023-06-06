@@ -19,7 +19,7 @@ public class ReservationDto {
 
         @Min(1)
         @NotNull(message = "필수 정보입니다.")
-        private Integer personCount;
+        private int personCount;
 
         @NotNull(message = "필수 정보입니다.")
         private String reservationDate;
@@ -31,7 +31,7 @@ public class ReservationDto {
 
 
         @Builder
-        public Request(Integer personCount, String reservationDate, String reservationTime, String demand){
+        public Request(int personCount, String reservationDate, String reservationTime, String demand){
             this.personCount = personCount;
             this.reservationDate = reservationDate;
             this.reservationTime = reservationTime;
@@ -46,7 +46,7 @@ public class ReservationDto {
         private String restaurantName;
         private String nickname;
         private String phoneNumber;
-        private Integer personCount;
+        private int personCount;
         private String reservationDate;
         private String reservationTime;
         private String demand;

@@ -35,7 +35,7 @@ public class  RestaurantDto {
     private String phoneNumber;
 
     @NotNull(message = "필수 정보입니다.")
-    private Integer limitedPersonNumber;
+    private int limitedPersonNumber;
 
     @NotBlank(message = "필수 정보입니다.")
     private String startTime;

@@ -24,7 +24,7 @@ public class MenuItem {
 
     private String food;
 
-    private Integer price;
+    private int price;
 
     private String description;
 
@@ -41,7 +41,7 @@ public class MenuItem {
     private List<MenuItemFile> menuItemFileList = new ArrayList<>();
 
     @Builder
-    public MenuItem(String food, Integer price, String description){
+    public MenuItem(String food, int price, String description){
         this.food = food;
         this.price = price;
         this.description = description;

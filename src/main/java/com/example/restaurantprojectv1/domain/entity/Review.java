@@ -27,7 +27,7 @@ public class Review {
 
     @Min(1)
     @Max(5)
-    private Integer score;
+    private int score;
 
     private String description;
 
@@ -58,7 +58,7 @@ public class Review {
 
 
     @Builder
-    public Review(Integer score, String description, Restaurant restaurant, MenuItem menuItem, User user){
+    public Review(int score, String description, Restaurant restaurant, MenuItem menuItem, User user){
         this.score = score;
         this.description = description;
         this.restaurant = restaurant;
