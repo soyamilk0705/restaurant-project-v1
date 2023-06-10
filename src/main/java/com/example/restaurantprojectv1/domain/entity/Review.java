@@ -67,9 +67,12 @@ public class Review {
 
     }
 
-    public void set(ReviewDto.Request reviewDto, MenuItem menuItem){
+    public void set(ReviewDto.Request reviewDto){
         this.score = reviewDto.getScore();
         this.description = reviewDto.getDescription();
+    }
+
+    public void setMenuItem(MenuItem menuItem){
         this.menuItem = menuItem;
     }
 }

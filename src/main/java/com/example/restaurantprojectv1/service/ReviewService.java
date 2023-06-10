@@ -31,9 +31,16 @@ public class ReviewService {
     String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\review";
 
 
+    /**
+     * 리뷰 작성
+     */
     public Long create(Long restaurantId, Long userId, ReviewDto.Request reviewDto, MultipartFile file) throws IOException {
-        Restaurant restaurant = getRestaurantData(restaurantId);
-        User user = getUserData(userId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new DataNotFoundException("음식점을 찾을 수 없습니다."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
+
         MenuItem menuItem = getMenuItemData(reviewDto.getFood());
 
         Review review = Review.builder()
@@ -53,50 +60,69 @@ public class ReviewService {
         return review.getId();
     }
 
+    /**
+     * 리뷰 보기
+     */
     public ReviewDto.Response read(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .map(r -> new ReviewDto.Response(r))
                 .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
     }
 
+    /**
+     * 리뷰 전체 보기
+     */
     public Page<ReviewDto.Response> readAll(Pageable pageable) {
         return reviewRepository.findAll(pageable)
                 .map(r -> new ReviewDto.Response(r));
     }
 
+    /**
+     * 리뷰 전체 보기 - 검색
+     */
     public Page<ReviewDto.Response> readAllSearch(String keyword, Pageable pageable){
         return reviewRepository.findAllByDescriptionContaining(keyword, pageable)
                 .map(r -> new ReviewDto.Response(r));
     }
 
+    /**
+     * 내가 쓴 리뷰 보기
+     */
     public Page<ReviewDto.Response> readAllByUserId(Long userId, Pageable pageable){
         return reviewRepository.findAllByUserId(userId, pageable)
                 .map(r -> new ReviewDto.Response(r));
     }
 
+    /**
+     *  내가 쓴 리뷰 갯수
+     */
     public Long countByUserId(Long userId) {
         return reviewRepository.countByUserId(userId);
     }
 
 
-    public Long update(Long reviewId, MultipartFile file, ReviewDto.Request reviewDto) throws IOException  {
+    /**
+     * 리뷰 수정
+     */
+    public void update(Long reviewId, MultipartFile file, ReviewDto.Request reviewDto) throws IOException  {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
 
-        MenuItem menuItem = getMenuItemData(reviewDto.getFood());
+        if (!review.getMenuItem().equals(reviewDto.getFood())){
+            MenuItem menuItem = getMenuItemData(reviewDto.getFood());
+            review.setMenuItem(menuItem);
+        }
 
-        review.set(reviewDto, menuItem);
-
-        reviewRepository.save(review);
+        review.set(reviewDto);
 
         if (file != null) {
             saveFile(review, file);
         }
-
-        return review.getId();
     }
 
-
+    /**
+     * 리뷰 삭제
+     */
     public void delete(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
@@ -109,22 +135,17 @@ public class ReviewService {
 
 
 
-    private Restaurant getRestaurantData(Long restaurantId){
-        return restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new DataNotFoundException("음식점을 찾을 수 없습니다."));
-    }
-
-    private User getUserData(Long userId){
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
-    }
-
+    /**
+     * 메뉴 데이터 가져오기
+     */
     private MenuItem getMenuItemData(String food){
         return menuItemRepository.findByFood(food)
                 .orElseThrow(() ->  new DataNotFoundException("메뉴를 찾을 수 없습니다."));
     }
 
-
+    /**
+     *  파일 저장
+     */
     private void saveFile(Review review, MultipartFile file) throws IOException {
         UUID uuid = UUID.randomUUID();
         String fileName = uuid + "_" + file.getOriginalFilename();
@@ -142,6 +163,9 @@ public class ReviewService {
         review.getReviewFileList().add(reviewFile);
     }
 
+    /**
+     * 파일 삭제
+     */
     public void removeFile(String fileName){
         File deleteFile;
 
