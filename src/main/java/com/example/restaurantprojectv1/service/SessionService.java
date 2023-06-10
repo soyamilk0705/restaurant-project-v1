@@ -21,11 +21,17 @@ public class SessionService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 이메일 중복 체크
+     */
     public boolean checkEmailDuplicate(String email) {
         return userRepository.existsByEmail(email) || !StringUtils.hasLength(email);
 
     }
 
+    /**
+     * 회원가입
+     */
     public Long join(SessionDto sessionDto) {
         User user = User.builder()
                 .email(sessionDto.getEmail())

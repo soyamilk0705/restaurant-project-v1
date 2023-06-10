@@ -32,6 +32,9 @@ public class ReviewController {
     private final MenuItemService menuItemService;
 
 
+    /**
+     * 리뷰 전체 보기
+     */
     @GetMapping("/list")
     public String reviewList(Model model, @PageableDefault(size = 5, sort = "registeredAt", direction = Sort.Direction.DESC) Pageable pageable){
         Page<ReviewDto.Response> reviewDtoPage = reviewService.readAll(pageable);
@@ -47,6 +50,9 @@ public class ReviewController {
         return "review/reviewList";
     }
 
+    /**
+     * 리뷰 전체 보기 - 검색
+     */
     @GetMapping("/list/search")
     public String reviewListSearch(Model model, @RequestParam String keyword, @PageableDefault Pageable pageable){
         Page<ReviewDto.Response> reviewDtoPage = reviewService.readAllSearch(keyword, pageable);
@@ -62,22 +68,31 @@ public class ReviewController {
         return "review/reviewList";
     }
 
+    /**
+     * 리뷰 작성 전 매장 선택 화면
+     */
     @GetMapping("/store")
     public String selectRestaurantPage(){
         return "review/reviewStore";
     }
 
+    /**
+     * 리뷰 작성 전 매장 선택
+     */
     @GetMapping("/store.do")
     public String restaurantList(Model model,
                                  @RequestParam(required = false) String city,
                                  @RequestParam(required = false) String country,
                                  @RequestParam(required = false) String keyword){
 
-        model.addAttribute("restaurantList", restaurantService.readAll(city, country, keyword));
+        model.addAttribute("restaurantList", restaurantService.search(city, country, keyword));
 
         return "review/reviewStore";
     }
 
+    /**
+     * 리뷰 작성 화면
+     */
     @GetMapping("/{restaurantId}")
     public String createPage(@PathVariable Long restaurantId, Model model){
         model.addAttribute("reviewDto", new ReviewDto.Request());
@@ -87,6 +102,9 @@ public class ReviewController {
         return "review/reviewForm";
     }
 
+    /**
+     * 리뷰 작성
+     */
     @PostMapping("/{restaurantId}")
     public String create(@PathVariable Long restaurantId,
                          @AuthenticationPrincipal PrincipalDetails userDetails,
@@ -108,6 +126,9 @@ public class ReviewController {
         return "message";
     }
 
+    /**
+     * 리뷰 수정 화면
+     */
     @GetMapping("/modify/{reviewId}")
     public String updatePage(@PathVariable Long reviewId, Model model){
         model.addAttribute("reviewDto", reviewService.read(reviewId));
@@ -116,6 +137,9 @@ public class ReviewController {
         return "review/reviewForm";
     }
 
+    /**
+     * 리뷰 수정
+     */
     @PutMapping("/modify/{reviewId}")
     public String update(@PathVariable Long reviewId,
                          @Valid @ModelAttribute("reviewDto") ReviewDto.Request reviewDto,
@@ -135,6 +159,9 @@ public class ReviewController {
         return "message";
     }
 
+    /**
+     * 리뷰 삭제
+     */
     @DeleteMapping("/delete/{reviewId}")
     public String delete(@PathVariable Long reviewId, Model model) {
         reviewService.delete(reviewId);

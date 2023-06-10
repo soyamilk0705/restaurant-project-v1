@@ -28,22 +28,31 @@ public class ReservationController{
     private final ReservationService reservationService;
     private final RestaurantService restaurantService;
 
+    /**
+     * 예약 전 음식점 선택 화면
+     */
     @GetMapping("/reservation/store")
     public String reservationStorePage(){
         return "reservation/reservationStore";
     }
 
+    /**
+     * 음식점 검색
+     */
     @GetMapping("/reservation/store.do")
     public String reservationStore(Model model,
                                    @RequestParam(required = false) String city,
                                    @RequestParam(required = false) String country,
                                    @RequestParam(required = false) String keyword){
 
-        model.addAttribute("restaurantList", restaurantService.readAll(city, country, keyword));
+        model.addAttribute("restaurantList", restaurantService.search(city, country, keyword));
 
         return "reservation/reservationStore";
     }
 
+    /**
+     * 예약 생성 화면
+     */
     @GetMapping("/reservation/{restaurantId}")
     public String createPage(Model model, @PathVariable Long restaurantId){
 
@@ -53,6 +62,9 @@ public class ReservationController{
         return "reservation/reservationWrite";
     }
 
+    /**
+     * 예약 생성
+     */
     @PostMapping("/reservation/{restaurantId}")
     public String create(@PathVariable Long restaurantId,
                          @AuthenticationPrincipal PrincipalDetails userDetails,
@@ -85,6 +97,9 @@ public class ReservationController{
 
     }
 
+    /**
+     * 예약 수정 화면
+     */
     @GetMapping("/reservation/modify/{reservationId}")
     public String updatePage(@PathVariable Long reservationId, Model model){
 
@@ -96,6 +111,9 @@ public class ReservationController{
         return "reservation/reservationEdit";
     }
 
+    /**
+     * 예약 수정
+     */
     @PutMapping("/reservation/modify/{reservationId}")
     public String update(@PathVariable Long reservationId,
                          @Valid @ModelAttribute("reservationDto") ReservationDto.Request reservationDto,
@@ -124,7 +142,9 @@ public class ReservationController{
         return "message";
     }
 
-
+    /**
+     * 예약 삭제
+     */
     @DeleteMapping("/reservation/delete/{reservationId}")
     public String delete(@PathVariable Long reservationId, Model model) {
         reservationService.delete(reservationId);
@@ -135,7 +155,9 @@ public class ReservationController{
         return "message";
     }
 
-
+    /**
+     * ADMIN : 예약 목록
+     */
     @GetMapping("/admin/reservation/list")
     public String readAll(Model model, @PageableDefault(size = 5)
                             @SortDefault.SortDefaults({
@@ -156,6 +178,9 @@ public class ReservationController{
         return "reservation/reservationList";
     }
 
+    /**
+     * ADMIN : 예약 목록 검색
+     */
     @GetMapping("/admin/reservation/list/search")
     public String readAllSearch(Model model,
                                 @RequestParam String searchType,

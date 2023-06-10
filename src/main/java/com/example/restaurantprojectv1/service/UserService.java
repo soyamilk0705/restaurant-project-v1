@@ -21,6 +21,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 회원 정보 읽기
+     */
     public UserDto.Response read(Long id) {
         return userRepository.findById(id)
                 .map(this::checkUnregisteredAt)
@@ -29,6 +32,9 @@ public class UserService {
     }
 
 
+    /**
+     * 회원 정보 수정
+     */
     public void edit(UserDto.Request userDto) {
         User user = userRepository.findByEmailAndUnregisteredAtIsNull(userDto.getEmail())
                 .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
@@ -39,25 +45,24 @@ public class UserService {
         }
 
         user.set(userDto);
-
-        userRepository.save(user);
     }
 
 
+    /**
+     * 회원 탈퇴
+     */
     public void delete(Long id) {
-        userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .map(this::checkUnregisteredAt)
-                .map(user -> {
-                    user.setUnregister();
-
-                    return userRepository.save(user);
-                })
                 .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
+
+        user.setUnregister();
     }
 
 
-
-
+    /**
+     * 탈퇴한 회원인지 확인
+     */
     private User checkUnregisteredAt(User user){
         if (!ObjectUtils.isEmpty(user.getUnregisteredAt())){
             throw new DataNotFoundException("사용자를 찾을 수 없습니다.");

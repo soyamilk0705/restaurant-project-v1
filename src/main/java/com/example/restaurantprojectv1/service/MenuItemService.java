@@ -31,6 +31,9 @@ public class MenuItemService {
 
     String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\menuItem";
 
+    /**
+     * 메뉴 생성
+     */
     public Long create(MultipartFile file, MenuItemDto.Request requestDto) throws IOException {
         MenuItem menuItem = MenuItem.builder()
                 .food(requestDto.getFood())
@@ -48,12 +51,18 @@ public class MenuItemService {
 
     }
 
+    /**
+     * 메뉴 읽기
+     */
     public MenuItemDto.Response read(Long id) {
         return menuItemRepository.findById(id)
                 .map(m -> new MenuItemDto.Response(m))
                 .orElseThrow(() -> new DataNotFoundException("메뉴를 찾을 수 없습니다."));
     }
 
+    /**
+     * 메뉴 전체 보기
+     */
     public List<MenuItemDto.Response> readAll(){
         return menuItemRepository.findAll()
                 .stream()
@@ -61,21 +70,23 @@ public class MenuItemService {
                 .collect(Collectors.toList());
     }
 
-    public Long update(Long id, MultipartFile file, MenuItemDto.Request menuItemDto) throws IOException {
+    /**
+     * 메뉴 수정
+     */
+    public void update(Long id, MultipartFile file, MenuItemDto.Request menuItemDto) throws IOException {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("메뉴를 찾을 수 없습니다."));
 
         menuItem.set(menuItemDto);
 
-        menuItemRepository.save(menuItem);
-
         if (!file.isEmpty()){
             saveFile(menuItem, file);
         }
-
-        return menuItem.getId();
     }
 
+    /**
+     * 메뉴 삭제
+     */
     public void delete(Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("메뉴를 찾을 수 없습니다."));
@@ -86,9 +97,9 @@ public class MenuItemService {
     }
 
 
-
-
-
+    /**
+     * 파일 저장
+     */
     private void saveFile(MenuItem menuItem, MultipartFile file) throws IOException {
         UUID uuid = UUID.randomUUID();
         String fileName = uuid + "_" + file.getOriginalFilename();
@@ -106,6 +117,9 @@ public class MenuItemService {
         menuItem.getMenuItemFileList().add(menuItemFile);
     }
 
+    /**
+     * 파일 삭제
+     */
     public void removeFile(String fileName){
         File deleteFile;
 

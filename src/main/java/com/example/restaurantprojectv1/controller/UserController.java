@@ -33,6 +33,9 @@ public class UserController {
     private final ReviewService reviewService;
 
 
+    /**
+     * 회원 정보 수정 화면
+     */
     @GetMapping("/edit")
     public String editPage(@AuthenticationPrincipal PrincipalDetails userDetails, Model model){
         Long userId = userDetails.getUser().getId();
@@ -42,6 +45,9 @@ public class UserController {
     }
 
 
+    /**
+     * 회원 정보 수정
+     */
     @PutMapping("/edit")
     public String edit(@Valid @ModelAttribute("userDto") UserDto.Request userDto, BindingResult bindingResult, Model model){
         if (!userDto.getPassword1().equals(userDto.getPassword2())){
@@ -60,7 +66,9 @@ public class UserController {
         return "message";
     }
 
-
+    /**
+     * 마이페이지 - 현재 예약내역
+     */
     @GetMapping("/mypage/reservation")
     public String myPageReservation(Model model,
                                     @AuthenticationPrincipal PrincipalDetails userDetails,
@@ -87,6 +95,10 @@ public class UserController {
         return "authentication/mypage/reservationTab";
     }
 
+
+    /**
+     * 마이페이지 - 과거 예약내역
+     */
     @GetMapping("/mypage/past-reservation")
     public String myPagePastReservation(Model model,
                                         @AuthenticationPrincipal PrincipalDetails userDetails,
@@ -114,6 +126,9 @@ public class UserController {
         return "authentication/mypage/pastReservationTab";
     }
 
+    /**
+     * 마이페이지 - 내가 쓴 리뷰
+     */
     @GetMapping("/mypage/review")
     public String myPageReview(Model model,
                                @AuthenticationPrincipal PrincipalDetails userDetails,
@@ -136,7 +151,9 @@ public class UserController {
     }
 
 
-
+    /**
+     * 회원 탈퇴
+     */
     @DeleteMapping("/unregister")
     public String unregister(@AuthenticationPrincipal PrincipalDetails userDetails, Model model) {
         Long userId = userDetails.getUser().getId();

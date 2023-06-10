@@ -18,8 +18,10 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
 
+    /**
+     * 음식점 생성
+     */
     public Long create(RestaurantDto restaurantDto) {
-
         Restaurant restaurant = Restaurant.builder()
                 .restaurantName(restaurantDto.getRestaurantName())
                 .city(restaurantDto.getCity())
@@ -41,7 +43,9 @@ public class RestaurantService {
 
     }
 
-
+    /**
+     * 음식점 읽기
+     */
     public RestaurantDto read(Long id) {
         return restaurantRepository.findById(id)
                 .map(this::entityToDto)
@@ -49,7 +53,10 @@ public class RestaurantService {
     }
 
 
-    public List<RestaurantDto> readAll(String city, String country, String keyword){
+    /**
+     * 음식점 검색
+     */
+    public List<RestaurantDto> search(String city, String country, String keyword){
         List<Restaurant> restaurantList;
 
         if (city == null){
@@ -70,19 +77,20 @@ public class RestaurantService {
     }
 
 
-    public Long update(Long id, RestaurantDto restaurantDto) {
-        return restaurantRepository.findById(id)
-                .map(restaurant -> {
-                    restaurant.set(restaurantDto);
-
-                    restaurantRepository.save(restaurant);
-
-                    return restaurant.getId();
-                })
+    /**
+     * 음식점 수정
+     */
+    public void update(Long id, RestaurantDto restaurantDto) {
+        Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("음식점을 찾을 수 없습니다."));
+
+        restaurant.set(restaurantDto);
     }
 
 
+    /**
+     * 음식점 삭제
+     */
     public void delete(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("음식점을 찾을 수 없습니다."));
@@ -90,7 +98,9 @@ public class RestaurantService {
         restaurantRepository.delete(restaurant);
     }
 
-
+    /**
+     * Entity -> Dto
+     */
     private RestaurantDto entityToDto(Restaurant restaurant) {
         return RestaurantDto.builder()
                 .id(restaurant.getId())
