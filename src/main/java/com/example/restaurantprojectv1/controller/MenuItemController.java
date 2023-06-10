@@ -18,25 +18,36 @@ public class MenuItemController {
 
     private final MenuItemService menuItemService;
 
-
+    /**
+     * 메뉴 목록 화면
+     */
     @GetMapping("/menu/list")
     public String menuListPage(Model model){
         model.addAttribute("menuItemList", menuItemService.readAll());
         return "menu/menuList";
     }
 
-    @GetMapping("/menu/detail")
-    public String read(@RequestParam Long id, Model model) {
-        model.addAttribute("menuItem", menuItemService.read(id));
+    /**
+     * 메뉴 상세 보기
+     */
+    @GetMapping("/menu/{menuItemId}")
+    public String read(@PathVariable Long menuItemId, Model model) {
+        model.addAttribute("menuItem", menuItemService.read(menuItemId));
         return "menu/menuDetail";
     }
 
+    /**
+     * 메뉴 등록 화면
+     */
     @GetMapping("/admin/menu/register")
     public String createPage(Model model){
         model.addAttribute("menuItemDto", new MenuItemDto.Request());
         return "menu/menuForm";
     }
 
+    /**
+     * 메뉴 등록
+     */
     @PostMapping("/admin/menu/register")
     public String create(@Valid @ModelAttribute(name = "menuItemDto") MenuItemDto.Request menuItemDto,
                          BindingResult bindingResult,
@@ -55,12 +66,18 @@ public class MenuItemController {
         return "message";
     }
 
+    /**
+     * 메뉴 수정 화면
+     */
     @GetMapping("/admin/menu/modify/{id}")
     public String updatePage(@PathVariable Long id, Model model){
         model.addAttribute("menuItemDto", menuItemService.read(id));
         return "menu/menuForm";
     }
 
+    /**
+     * 메뉴 수정
+     */
     @PutMapping("/admin/menu/modify/{id}")
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute(name = "menuItemDto") MenuItemDto.Request menuItemDto,
@@ -80,6 +97,9 @@ public class MenuItemController {
         return "message";
     }
 
+    /**
+     * 메뉴 삭제
+     */
     @DeleteMapping("/admin/menu/delete/{id}")
     public String delete(@PathVariable Long id, Model model) {
         menuItemService.delete(id);
