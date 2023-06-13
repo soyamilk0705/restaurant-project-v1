@@ -42,7 +42,7 @@ public class ReservationServiceTests {
         reservationDto = ReservationDto.Request.builder()
                 .personCount(1)
                 .reservationTime(LocalTime.now().toString())
-                .reservationDate(LocalDate.now())
+                .reservationDate(LocalDate.now().toString())
                 .demand("test")
                 .build();
     }
@@ -83,10 +83,10 @@ public class ReservationServiceTests {
         reservationDto.setDemand("수정");
 
         // when
-        Long updateId = reservationService.update(reservationId, reservationDto);
+        reservationService.update(reservationId, reservationDto);
 
         // then
-        Reservation savedReservation = reservationRepository.findById(updateId).orElse(null);
+        Reservation savedReservation = reservationRepository.findById(reservationId).orElse(null);
 
         assertEquals(reservationDto.getPersonCount(), savedReservation.getPersonCount());
         assertEquals(reservationDto.getDemand(), savedReservation.getDemand());

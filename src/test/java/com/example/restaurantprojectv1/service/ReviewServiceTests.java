@@ -106,15 +106,15 @@ public class ReviewServiceTests {
     void update_without_file() throws IOException {
         // given
         MockMultipartFile file = new MockMultipartFile("file", InputStream.nullInputStream());
-        Long createId = reviewService.create(restaurant.getId(), user.getId(), reviewDto, file);
+        Long savedId = reviewService.create(restaurant.getId(), user.getId(), reviewDto, file);
         reviewDto.setScore(1);
         reviewDto.setDescription("수정");
 
         // when
-        Long updateId = reviewService.update(createId, file, reviewDto);
+        reviewService.update(savedId, file, reviewDto);
 
         // then
-        Review savedReview = reviewRepository.findById(updateId).orElse(null);
+        Review savedReview = reviewRepository.findById(savedId).orElse(null);
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
@@ -127,16 +127,16 @@ public class ReviewServiceTests {
     void update_with_file1() throws IOException {
         // given
         MockMultipartFile file = createMockMultipartFile();
-        Long createId = reviewService.create(restaurant.getId(), user.getId(), reviewDto, file);
+        Long savedId = reviewService.create(restaurant.getId(), user.getId(), reviewDto, file);
 
         reviewDto.setScore(1);
         reviewDto.setDescription("수정");
 
         // when
-        Long updateId = reviewService.update(createId, file, reviewDto);
+        reviewService.update(savedId, file, reviewDto);
 
         // then
-        Review savedReview = reviewRepository.findById(updateId).orElse(null);
+        Review savedReview = reviewRepository.findById(savedId).orElse(null);
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());
@@ -150,16 +150,16 @@ public class ReviewServiceTests {
         // given
         MockMultipartFile emptyFile = new MockMultipartFile("file", InputStream.nullInputStream());
         MockMultipartFile file = createMockMultipartFile();
-        Long createId = reviewService.create(restaurant.getId(), user.getId(), reviewDto, file);
+        Long savedId = reviewService.create(restaurant.getId(), user.getId(), reviewDto, file);
 
         reviewDto.setScore(1);
         reviewDto.setDescription("수정");
 
         // when
-        Long updateId = reviewService.update(createId, emptyFile, reviewDto);
+        reviewService.update(savedId, emptyFile, reviewDto);
 
         // then
-        Review savedReview = reviewRepository.findById(updateId).orElse(null);
+        Review savedReview = reviewRepository.findById(savedId).orElse(null);
 
         assertEquals(reviewDto.getScore(), savedReview.getScore());
         assertEquals(reviewDto.getDescription(), savedReview.getDescription());

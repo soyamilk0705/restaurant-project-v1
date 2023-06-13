@@ -91,10 +91,10 @@ public class MenuItemServiceTests {
         menuItem.setDescription("수정");
 
         // when
-        Long menuItemId = menuItemService.update(savedId, file, menuItem);
+        menuItemService.update(savedId, file, menuItem);
 
         // then
-        MenuItem savedMenuItem = menuItemRepository.findById(menuItemId).orElse(null);
+        MenuItem savedMenuItem = menuItemRepository.findById(savedId).orElse(null);
 
         assertEquals(menuItem.getFood(), savedMenuItem.getFood());
         assertEquals(menuItem.getDescription(), savedMenuItem.getDescription());
@@ -111,10 +111,10 @@ public class MenuItemServiceTests {
         menuItem.setDescription("수정");
 
         // when
-        Long menuItemId = menuItemService.update(savedId, file, menuItem);
+        menuItemService.update(savedId, file, menuItem);
 
         // then
-        MenuItem savedMenuItem = menuItemRepository.findById(menuItemId).orElse(null);
+        MenuItem savedMenuItem = menuItemRepository.findById(savedId).orElse(null);
 
         assertEquals(menuItem.getFood(), savedMenuItem.getFood());
         assertEquals(menuItem.getDescription(), savedMenuItem.getDescription());
@@ -132,10 +132,10 @@ public class MenuItemServiceTests {
         menuItem.setDescription("수정");
 
         // when
-        Long menuItemId = menuItemService.update(savedId, file, menuItem);
+        menuItemService.update(savedId, file, menuItem);
 
         // then
-        MenuItem savedMenuItem = menuItemRepository.findById(menuItemId).orElse(null);
+        MenuItem savedMenuItem = menuItemRepository.findById(savedId).orElse(null);
 
         assertEquals(menuItem.getFood(), savedMenuItem.getFood());
         assertEquals(menuItem.getDescription(), savedMenuItem.getDescription());

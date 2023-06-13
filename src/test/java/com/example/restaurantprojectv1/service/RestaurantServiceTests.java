@@ -54,16 +54,16 @@ public class RestaurantServiceTests {
     void update() {
         // given
         RestaurantDto restaurantDto = createRestaurantDto();
-        Long createId = restaurantService.create(restaurantDto);
+        Long createdId = restaurantService.create(restaurantDto);
 
         restaurantDto.setRestaurantName("수정");
         restaurantDto.setDetailAddress("수정");
 
         // when
-        Long updateId = restaurantService.update(createId, restaurantDto);
+        restaurantService.update(createdId, restaurantDto);
 
         // then
-        Restaurant savedRestaurant = restaurantRepository.findById(updateId).orElse(null);
+        Restaurant savedRestaurant = restaurantRepository.findById(createdId).orElse(null);
 
         assertEquals(restaurantDto.getRestaurantName(), savedRestaurant.getRestaurantName());
         assertEquals(restaurantDto.getDetailAddress(), savedRestaurant.getDetailAddress());
