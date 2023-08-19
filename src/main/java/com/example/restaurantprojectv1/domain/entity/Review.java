@@ -32,14 +32,10 @@ public class Review {
     private String description;
 
     @CreatedDate
-    private LocalDateTime registeredAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @LastModifiedBy
-    private String updatedBy;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")

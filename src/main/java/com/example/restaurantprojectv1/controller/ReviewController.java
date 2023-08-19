@@ -36,7 +36,7 @@ public class ReviewController {
      * 리뷰 전체 보기
      */
     @GetMapping("/list")
-    public String reviewList(Model model, @PageableDefault(size = 5, sort = "registeredAt", direction = Sort.Direction.DESC) Pageable pageable){
+    public String reviewList(Model model, @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         Page<ReviewDto.Response> reviewDtoPage = reviewService.readAll(pageable);
 
         Pagination pagination = new Pagination();

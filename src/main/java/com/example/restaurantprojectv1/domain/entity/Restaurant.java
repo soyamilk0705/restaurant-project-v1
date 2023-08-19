@@ -55,15 +55,12 @@ public class Restaurant {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @CreatedDate
-    private LocalDateTime registeredAt;
+    private LocalDateTime createdAt;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @LastModifiedBy
-    private String updatedBy;
 
 
     @OneToMany(mappedBy = "restaurant", orphanRemoval = true)

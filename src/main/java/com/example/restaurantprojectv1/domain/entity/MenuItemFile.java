@@ -27,11 +27,6 @@ public class MenuItemFile {
 
     private String filePath;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @CreatedDate
-    private LocalDateTime registeredAt;
-
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_item_id")

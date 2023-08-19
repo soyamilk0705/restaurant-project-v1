@@ -31,9 +31,6 @@ public class MenuItem {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @CreatedBy
-    private String createdBy;
-
     @OneToMany(mappedBy = "menuItem", orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
 

@@ -132,7 +132,7 @@ public class UserController {
     @GetMapping("/mypage/review")
     public String myPageReview(Model model,
                                @AuthenticationPrincipal PrincipalDetails userDetails,
-                               @PageableDefault(size = 5, sort = "registeredAt", direction = Sort.Direction.DESC) Pageable pageable){
+                               @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
         User user = userDetails.getUser();
 
         Page<ReviewDto.Response> reviewDtoPage = reviewService.readAllByUserId(user.getId(), pageable);

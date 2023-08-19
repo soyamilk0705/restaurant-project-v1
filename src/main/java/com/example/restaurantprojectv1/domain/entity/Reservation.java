@@ -38,7 +38,7 @@ public class Reservation {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @CreatedDate
-    private LocalDateTime registeredAt;
+    private LocalDateTime createdAt;
 
     @ColumnDefault("0")
     private boolean cancel;

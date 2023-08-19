@@ -31,7 +31,7 @@ public class ReviewFile {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @CreatedDate
-    private LocalDateTime registeredAt;
+    private LocalDateTime createdAt;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)

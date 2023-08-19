@@ -57,9 +57,6 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @LastModifiedBy
-    private String updatedBy;
-
 
     @JsonManagedReference // JPA 연관관계에서 양방향 매핑 선언 후 발생하는 infinite recursion 발생 해결 위해 사용
     @OneToMany(mappedBy = "user")
