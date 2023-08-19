@@ -31,10 +31,10 @@ public class ReservationService{
      * 예약 생성
      */
     public Long create(Long restaurantId, Long userId, ReservationDto.Request reservationDto) {
-        var restaurant = restaurantRepository.findById(restaurantId)
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new DataNotFoundException("음식점 데이터 없음"));
 
-        var user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("사용자 없음"));
 
         Reservation reservation = Reservation.builder()
