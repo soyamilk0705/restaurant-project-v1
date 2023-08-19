@@ -74,7 +74,7 @@
                 var email = $("#email").val();
 
                 $.ajax({
-                    url: "http://localhost:8080/checkEmailDuplicate?email=" + email,
+                    url: "http://localhost:8000/checkEmailDuplicate?email=" + email,
                     type: "GET",
                     success: function(data) {
                         if(data == 1){
