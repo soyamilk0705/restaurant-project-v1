@@ -8,9 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface MenuItemFileRepository extends JpaRepository<MenuItemFile, Long> {
-
-    Optional<MenuItemFile> findByFileName(String fileName);
-
     void deleteByFileName(String fileName);
-
 }

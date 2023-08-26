@@ -8,8 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewFileRepository extends JpaRepository<ReviewFile, Long> {
-
-    Optional<ReviewFile> findByFileName(String fileName);
-
     void deleteByFileName(String fileName);
 }
