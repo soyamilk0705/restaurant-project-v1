@@ -37,7 +37,6 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.14.1'
 	testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
-	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
 }
 
 tasks.named('test') {
